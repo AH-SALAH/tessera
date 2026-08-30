@@ -68,7 +68,7 @@ After: Uses `<div class="admin-layout">` wrapper only.
 | `--color-chalk`     | `#F1F0EC` | `#1B1F23` | Base background            |
 | `--color-surface`   | `#FFFFFF` | `#24292E` | Cards, panels              |
 | `--color-graphite`  | `#22262B` | `#F1F0EC` | Primary text               |
-| `--color-muted`     | `#6B6F73` | `#9A9EA2` | Secondary text             |
+| `--color-muted`     | `#686C70` | `#9A9EA2` | Secondary text             |
 | `--color-moss`      | `#3B5D50` | `#4E7D6E` | Primary accent (published) |
 | `--color-ochre`     | `#C98A3C` | `#D9A05B` | Secondary accent (draft)   |
 | `--color-clay-line` | `#D8D5CC` | `#33383D` | Hairline borders           |

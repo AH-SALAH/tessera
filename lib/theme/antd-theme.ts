@@ -28,7 +28,7 @@ export function buildAntdThemeConfig(mode: "light" | "dark"): ThemeConfig {
       colorBgBase: cssVar("--color-chalk", "#F1F0EC", "#1B1F23", mode),
       colorBgContainer: cssVar("--color-surface", "#FFFFFF", "#24292E", mode),
       colorText: cssVar("--color-graphite", "#22262B", "#F1F0EC", mode),
-      colorTextSecondary: cssVar("--color-muted", "#6B6F73", "#9A9EA2", mode),
+      colorTextSecondary: cssVar("--color-muted", "#686C70", "#9A9EA2", mode),
       colorBorder: cssVar("--color-clay-line", "#D8D5CC", "#33383D", mode),
       borderRadius: 4,
       fontFamily: cssVar(

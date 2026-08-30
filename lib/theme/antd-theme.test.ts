@@ -23,7 +23,7 @@ describe("buildAntdThemeConfig", () => {
               "--color-chalk": "#F1F0EC",
               "--color-surface": "#FFFFFF",
               "--color-graphite": "#22262B",
-              "--color-muted": "#6B6F73",
+              "--color-muted": "#686C70",
               "--color-clay-line": "#D8D5CC",
               "--font-body": "Public Sans, system-ui, sans-serif",
             };
@@ -41,7 +41,7 @@ describe("buildAntdThemeConfig", () => {
     expect(token.colorBgBase).toBe("#F1F0EC");
     expect(token.colorBgContainer).toBe("#FFFFFF");
     expect(token.colorText).toBe("#22262B");
-    expect(token.colorTextSecondary).toBe("#6B6F73");
+    expect(token.colorTextSecondary).toBe("#686C70");
     expect(token.colorBorder).toBe("#D8D5CC");
     expect(token.borderRadius).toBe(4);
     expect(token.fontFamily).toBe("Public Sans, system-ui, sans-serif");

@@ -40,7 +40,7 @@ PulseFeed's cold, live-data, oscilloscope register.
 | `--color-chalk`     | `#F1F0EC` | Base background — a cool stone off-white, deliberately _not_ cream                   |
 | `--color-surface`   | `#FFFFFF` | Cards, panels — pure white against the chalk base for a "card on a table" separation |
 | `--color-graphite`  | `#22262B` | Primary text — near-black, warmed slightly, not pure `#000`                          |
-| `--color-muted`     | `#6B6F73` | Secondary text, metadata, timestamps                                                 |
+| `--color-muted`     | `#686C70` | Secondary text, metadata, timestamps                                                 |
 | `--color-moss`      | `#3B5D50` | Primary accent — published/confirmed state, primary actions                          |
 | `--color-ochre`     | `#C98A3C` | Secondary accent — draft/pending state, highlights                                   |
 | `--color-clay-line` | `#D8D5CC` | Hairline borders, card edges — warm gray, not a stark black rule                     |

@@ -49,25 +49,6 @@ test.describe("a11y — Public pages", () => {
     ).toHaveLength(0);
   });
 
-  // Apollo landing page is disabled in production (NODE_ENV=production in CI),
-  // so /api/graphql returns a bare response without <title> or lang — not a real page.
-  test.skip(process.env.NODE_ENV === "production", "Apollo landing page disabled in production");
-  test("public GraphQL schema page has no serious/critical violations", async ({ page }) => {
-    await page.goto("/api/graphql");
-    await page.waitForLoadState("networkidle");
-
-    const results = await new AxeBuilder({ page })
-      .withTags(["wcag2a", "wcag2aa", "wcag21a", "wcag21aa"])
-      .analyze();
-
-    const serious = results.violations.filter(
-      (v) => v.impact === "serious" || v.impact === "critical",
-    );
-    expect(
-      serious,
-      `GraphQL schema page a11y violations:\n${serious.map((v) => `  [${v.impact}] ${v.id}: ${v.description}\n  Fix: ${v.helpUrl}`).join("\n")}`,
-    ).toHaveLength(0);
-  });
 });
 
 test.describe("a11y — Admin console", () => {

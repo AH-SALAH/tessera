@@ -39,10 +39,10 @@ export async function sendResetPasswordEmail({
         <h2 style="font-family: 'Fraunces', serif; color: #22262B; margin-bottom: 16px;">
           Password Reset
         </h2>
-        <p style="color: #6B6F73; line-height: 1.6;">
+        <p style="color: #686C70; line-height: 1.6;">
           Hi ${name}, you requested a password reset for your Tessera account.
         </p>
-        <p style="color: #6B6F73; line-height: 1.6;">
+        <p style="color: #686C70; line-height: 1.6;">
           Click the button below to set a new password. This link expires in 1 hour.
         </p>
         <a href="${resetUrl}"
@@ -50,11 +50,11 @@ export async function sendResetPasswordEmail({
                   text-decoration: none; border-radius: 4px; font-weight: 600; margin: 16px 0;">
           Reset Password
         </a>
-        <p style="color: #6B6F73; font-size: 13px; line-height: 1.6;">
+        <p style="color: #686C70; font-size: 13px; line-height: 1.6;">
           If you didn't request this, you can safely ignore this email.
         </p>
         <hr style="border: none; border-top: 1px solid #D8D5CC; margin: 24px 0;" />
-        <p style="color: #6B6F73; font-size: 12px;">
+        <p style="color: #686C70; font-size: 12px;">
           Tessera — Structured content, one piece at a time.
         </p>
       </div>
@@ -83,10 +83,10 @@ export async function sendInviteEmail({
         <h2 style="font-family: 'Fraunces', serif; color: #22262B; margin-bottom: 16px;">
           You're Invited
         </h2>
-        <p style="color: #6B6F73; line-height: 1.6;">
+        <p style="color: #686C70; line-height: 1.6;">
           Hi ${inviteName}, you've been invited to join Tessera as a team member.
         </p>
-        <p style="color: #6B6F73; line-height: 1.6;">
+        <p style="color: #686C70; line-height: 1.6;">
           Click the button below to accept the invitation and set your password. This link expires in 7 days.
         </p>
         <a href="${inviteUrl}"
@@ -94,11 +94,11 @@ export async function sendInviteEmail({
                   text-decoration: none; border-radius: 4px; font-weight: 600; margin: 16px 0;">
           Accept Invitation
         </a>
-        <p style="color: #6B6F73; font-size: 13px; line-height: 1.6;">
+        <p style="color: #686C70; font-size: 13px; line-height: 1.6;">
           If you weren't expecting this email, you can safely ignore it.
         </p>
         <hr style="border: none; border-top: 1px solid #D8D5CC; margin: 24px 0;" />
-        <p style="color: #6B6F73; font-size: 12px;">
+        <p style="color: #686C70; font-size: 12px;">
           Tessera — Structured content, one piece at a time.
         </p>
       </div>
@@ -127,7 +127,7 @@ export async function sendVerificationEmail({
         <h2 style="font-family: 'Fraunces', serif; color: #22262B; margin-bottom: 16px;">
           Welcome to Tessera
         </h2>
-        <p style="color: #6B6F73; line-height: 1.6;">
+        <p style="color: #686C70; line-height: 1.6;">
           Hi ${name}, your account has been created. Please verify your email to get started.
         </p>
         <a href="${verifyUrl}"
@@ -135,11 +135,11 @@ export async function sendVerificationEmail({
                   text-decoration: none; border-radius: 4px; font-weight: 600; margin: 16px 0;">
           Verify Email
         </a>
-        <p style="color: #6B6F73; font-size: 13px; line-height: 1.6;">
+        <p style="color: #686C70; font-size: 13px; line-height: 1.6;">
           This link expires in 1 hour.
         </p>
         <hr style="border: none; border-top: 1px solid #D8D5CC; margin: 24px 0;" />
-        <p style="color: #6B6F73; font-size: 12px;">
+        <p style="color: #686C70; font-size: 12px;">
           Tessera — Structured content, one piece at a time.
         </p>
       </div>
