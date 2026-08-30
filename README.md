@@ -40,6 +40,50 @@ Tessera is actively evolving toward a full-featured headless CMS with workflows,
 
 ---
 
+## Screenshots
+
+<div align="center">
+
+<img src="screenshots/01-landing-page.png" alt="Landing Page" width="800" />
+
+_Public landing page — light mode_
+
+</div>
+
+<div align="center">
+
+<img src="screenshots/03-admin-dashboard.png" alt="Admin Dashboard" width="800" />
+
+_Admin dashboard with session-gated navigation_
+
+</div>
+
+<div align="center">
+
+<img src="screenshots/04-projects-list.png" alt="Projects List" width="800" />
+
+_Projects catalog with status badges and locale support_
+
+</div>
+
+<div align="center">
+
+<img src="screenshots/05-users-list.png" alt="Users List" width="800" />
+
+_User management with invite-based onboarding_
+
+</div>
+
+<div align="center">
+
+<img src="screenshots/07-landing-dark.png" alt="Landing Dark Mode" width="800" />
+
+_Dark mode_
+
+</div>
+
+---
+
 ## Quick Start
 
 ```bash
