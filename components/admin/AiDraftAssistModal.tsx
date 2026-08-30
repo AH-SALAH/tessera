@@ -30,9 +30,9 @@ interface AiDraftAssistModalProps {
 }
 
 const TONE_OPTIONS: { value: DraftTone; labelKey: string }[] = [
-  { value: "academic", labelKey: "aiDraftAssist.tone.academic" },
-  { value: "curatorial", labelKey: "aiDraftAssist.tone.curatorial" },
-  { value: "exhibition", labelKey: "aiDraftAssist.tone.exhibition" },
+  { value: "ACADEMIC", labelKey: "aiDraftAssist.tone.academic" },
+  { value: "CURATORIAL", labelKey: "aiDraftAssist.tone.curatorial" },
+  { value: "EXHIBITION", labelKey: "aiDraftAssist.tone.exhibition" },
 ];
 
 export function AiDraftAssistModal({
@@ -45,9 +45,14 @@ export function AiDraftAssistModal({
 }: AiDraftAssistModalProps) {
   const { t } = useTranslation();
   const [bullets, setBullets] = useState("");
-  const [tone, setTone] = useState<DraftTone>("curatorial");
-  const [description, setDescription] = useState("");
-  const [seoSummary, setSeoSummary] = useState("");
+  const [tone, setTone] = useState<DraftTone>("CURATORIAL");
+  // Track user edits separately from the content prop.
+  // When content changes (new generation), overrides are cleared in handleGenerate.
+  const [userDescription, setUserDescription] = useState<string | null>(null);
+  const [userSeoSummary, setUserSeoSummary] = useState<string | null>(null);
+
+  const description = userDescription ?? content?.description ?? "";
+  const seoSummary = userSeoSummary ?? content?.seoSummary ?? "";
 
   function handleGenerate() {
     const bulletLines = bullets
@@ -55,12 +60,10 @@ export function AiDraftAssistModal({
       .map((l) => l.replace(/^-\s*/, "").trim())
       .filter(Boolean);
     if (bulletLines.length > 0) {
+      // Clear any previous user edits so new content shows fresh
+      setUserDescription(null);
+      setUserSeoSummary(null);
       onGenerate(bulletLines, tone);
-      // Sync description from content after generation starts
-      if (content) {
-        setDescription(content.description ?? "");
-        setSeoSummary(content.seoSummary ?? "");
-      }
     }
   }
 
@@ -202,8 +205,8 @@ export function AiDraftAssistModal({
                     id="ai-description"
                     name="ai-description"
                     rows={4}
-                    value={content.description ?? ""}
-                    onChange={(e) => setDescription(e.target.value)}
+                    value={description}
+                    onChange={(e) => setUserDescription(e.target.value)}
                     disabled={loading}
                     className="!border-[var(--color-clay-line)] !rounded"
                     style={{ fontFamily: "var(--font-body)" }}

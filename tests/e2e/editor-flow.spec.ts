@@ -63,7 +63,7 @@ test.describe("Editor Flow", () => {
     const uniqueSlug = `editor-no-publish-${Date.now()}`;
     await createDraft(page, uniqueSlug, "No Publish Test");
 
-    const publishButton = page.locator('button:has-text("Publish Changes")');
+    const publishButton = page.locator('button:has-text("Publish Changes")').last();
     await expect(publishButton).toBeDisabled();
     await publishButton.hover();
     await expect(page.locator('[role="tooltip"]')).toContainText("Only an Admin can publish");

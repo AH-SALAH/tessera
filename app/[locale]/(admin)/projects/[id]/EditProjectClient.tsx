@@ -169,11 +169,13 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
       const en = enRes.data?.generateDraftAssist;
       const ar = arRes.data?.generateDraftAssist;
       if (!en?.available && !ar?.available) message.warning(t("aiDraftAssist.unavailable"));
-      return {
+      const result: AiDraftContent = {
         description: en?.available ? en.description : undefined,
         descriptionAr: ar?.available ? ar.description : undefined,
         seoSummary: en?.seoSummary,
       };
+      setAiContent(result);
+      return result;
     } catch {
       message.warning(t("aiDraftAssist.unavailable"));
       return {};

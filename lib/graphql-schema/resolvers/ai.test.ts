@@ -19,7 +19,7 @@ import { aiResolvers } from "./ai";
 const mockedIsEnabled = vi.mocked(isEnabled);
 const mockedClient = vi.mocked(generateDraftAssist);
 
-const ARGS = { bullets: ["fast", "bilingual"], locale: "EN" as const, tone: "curatorial" as const };
+const ARGS = { bullets: ["fast", "bilingual"], locale: "EN" as const, tone: "CURATORIAL" as const };
 
 const ctxAs = (role: "ADMIN" | "EDITOR") => ({ session: { user: { id: "u1", role } } });
 const ctxAnon = { session: null };

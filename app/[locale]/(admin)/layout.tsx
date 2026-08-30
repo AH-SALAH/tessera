@@ -4,7 +4,6 @@ import { headers } from "next/headers";
 import { getServerSession } from "@/lib/auth/session";
 import { isEnabled } from "@/lib/feature-flags";
 import { getSiteUrl } from "@/lib/site-url";
-import { prisma } from "@/lib/prisma";
 import { AdminLayoutClient } from "./AdminLayoutClient";
 import { AdminShell } from "@/components/admin/AdminShell";
 import { ReactNode } from "react";
@@ -25,13 +24,6 @@ export default async function AdminLayout({
   // per-component (FR-010).
   const aiDraftAssistEnabled = await isEnabled("AI_DRAFT_ASSIST");
 
-  // Read user's saved theme preference from DB so next-themes applies it on first render.
-  const userPrefs = await prisma.user.findUnique({
-    where: { id: session.user.id },
-    select: { theme: true },
-  });
-  const userTheme = userPrefs?.theme;
-
   return (
     <AdminShell
       locale={resolvedParams.locale}
@@ -40,7 +32,6 @@ export default async function AdminLayout({
       <AdminLayoutClient
         locale={resolvedParams.locale}
         aiDraftAssistEnabled={aiDraftAssistEnabled}
-        initialTheme={userTheme === "dark" || userTheme === "light" ? userTheme : undefined}
       >
         {children}
       </AdminLayoutClient>

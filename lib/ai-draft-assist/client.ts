@@ -4,7 +4,7 @@
 // before each deploy), typed { available: false } result on any failure rather than throwing,
 // so a provider hiccup never blocks the authoring form (FR-011).
 
-export type DraftTone = "academic" | "curatorial" | "exhibition";
+export type DraftTone = "ACADEMIC" | "CURATORIAL" | "EXHIBITION";
 
 interface DraftAssistResult {
   available: boolean;
@@ -14,13 +14,13 @@ interface DraftAssistResult {
 }
 
 const TONE_INSTRUCTIONS: Record<DraftTone, string> = {
-  academic:
+  ACADEMIC:
     "Write in formal academic prose with discipline-appropriate terminology. " +
     "Assume the reader has subject-matter expertise.",
-  curatorial:
+  CURATORIAL:
     "Write as a museum curator summarizing an accessioned piece for an internal catalog. " +
     "Be precise and factual, emphasizing provenance and classification.",
-  exhibition:
+  EXHIBITION:
     "Write for a general museum-going audience. Accessible, engaging, and jargon-free. " +
     "Convey significance without assuming prior knowledge.",
 };
@@ -28,7 +28,7 @@ const TONE_INSTRUCTIONS: Record<DraftTone, string> = {
 export async function generateDraftAssist(
   bullets: string[],
   locale: "EN" | "AR",
-  tone: DraftTone = "curatorial",
+  tone: DraftTone = "CURATORIAL",
 ): Promise<DraftAssistResult> {
   try {
     const languageInstruction =

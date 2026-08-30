@@ -20,9 +20,7 @@ export const aiResolvers = {
           extensions: { code: "FEATURE_DISABLED" },
         });
       }
-      // GraphQL enums arrive as UPPERCASE (e.g. "CURATORIAL") but the
-      // client function expects lowercase (e.g. "curatorial"). Normalize here.
-      const tone = args.tone?.toLowerCase() as DraftTone | undefined;
+      const tone = args.tone as DraftTone | undefined;
       return requireRole(["ADMIN", "EDITOR"], () =>
         generateDraftAssist(args.bullets, args.locale, tone),
       )(_, args, ctx);

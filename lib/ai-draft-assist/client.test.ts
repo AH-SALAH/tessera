@@ -60,7 +60,7 @@ describe("generateDraftAssist", () => {
 
   it("includes academic tone instruction when tone is academic", async () => {
     fetchMock.mockResolvedValue(okResponse("Description.\nSEO."));
-    await generateDraftAssist(["test"], "EN", "academic");
+    await generateDraftAssist(["test"], "EN", "ACADEMIC");
 
     const [, init] = fetchMock.mock.calls[0];
     const body = JSON.parse(init.body);
@@ -69,7 +69,7 @@ describe("generateDraftAssist", () => {
 
   it("includes exhibition tone instruction when tone is exhibition", async () => {
     fetchMock.mockResolvedValue(okResponse("Description.\nSEO."));
-    await generateDraftAssist(["test"], "EN", "exhibition");
+    await generateDraftAssist(["test"], "EN", "EXHIBITION");
 
     const [, init] = fetchMock.mock.calls[0];
     const body = JSON.parse(init.body);

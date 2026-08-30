@@ -67,19 +67,21 @@ export const metadata: Metadata = {
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  // Cookie is the runtime source of truth (updated synchronously by next-themes).
+  // DB is only a fallback when the cookie is empty (first visit, expired, cleared).
   let initialTheme = await getTheme();
-
-  // When authenticated, prefer the user's saved DB theme over the cookie value.
-  try {
-    const { getServerSession } = await import("@/lib/auth/session");
-    const { headers } = await import("next/headers");
-    const headersList = await headers();
-    const session = await getServerSession(new Request(getSiteUrl(), { headers: headersList }));
-    if (session?.user?.theme && session.user.theme !== "system") {
-      initialTheme = session.user.theme;
+  if (!initialTheme) {
+    try {
+      const { getServerSession } = await import("@/lib/auth/session");
+      const { headers } = await import("next/headers");
+      const headersList = await headers();
+      const session = await getServerSession(new Request(getSiteUrl(), { headers: headersList }));
+      if (session?.user?.theme && session.user.theme !== "system") {
+        initialTheme = session.user.theme;
+      }
+    } catch {
+      // Not authenticated or session error — fall through to cookie value.
     }
-  } catch {
-    // Not authenticated or session error — fall through to cookie value.
   }
 
   return (

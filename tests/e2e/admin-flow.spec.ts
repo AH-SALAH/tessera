@@ -46,7 +46,7 @@ test.describe("Admin Flow", () => {
     await expect(page.locator("h1")).toContainText("Edit Project");
 
     // Publish button is enabled for admins.
-    const publishButton = page.locator('button:has-text("Publish Changes")');
+    const publishButton = page.locator('button:has-text("Publish Changes")').last();
     await expect(publishButton).toBeEnabled();
     await publishButton.click();
 
@@ -94,16 +94,15 @@ test.describe("Admin Flow", () => {
     await dialog.locator("button.ant-btn-primary").click();
     await expect(page.locator("text=Invitation sent")).toBeVisible({ timeout: 10000 });
 
-    // Verify via GraphQL users query
-    const usersResponse = await request.post("/api/graphql", {
+    // Verify via GraphQL pendingInvitations query (inviteUser creates an Invitation, not a User)
+    const inviteResponse = await request.post("/api/graphql", {
       headers: { Cookie: `better-auth.session_token=${adminToken}` },
-      data: { query: `query { users { email role } }` },
+      data: { query: `query { pendingInvitations { email role } }` },
     });
-    const usersBody = await usersResponse.json();
-    if (!usersBody.data?.users) console.error("users query:", JSON.stringify(usersBody));
-    const newUser = usersBody.data.users.find((u: any) => u.email === newUserEmail);
-    expect(newUser).toBeDefined();
-    expect(newUser.role).toBe("EDITOR");
+    const inviteBody = await inviteResponse.json();
+    const newInvite = inviteBody.data?.pendingInvitations?.find((u: any) => u.email === newUserEmail);
+    expect(newInvite).toBeDefined();
+    expect(newInvite.role).toBe("EDITOR");
   });
 
   test("admin can delete a published project", async ({ page, request }) => {
@@ -138,6 +137,10 @@ test.describe("Admin Flow", () => {
     const card = page.locator("article", { hasText: uniqueTitle });
     await expect(card).toBeVisible({ timeout: 10000 });
     await card.locator('button[aria-label*="Delete"]').first().click();
+    // ProjectsListClient uses antd modal.confirm for delete
+    const confirmModal = page.locator(".ant-modal-confirm");
+    await expect(confirmModal).toBeVisible({ timeout: 5000 });
+    await confirmModal.locator("button.ant-btn-dangerous, button.ant-btn-primary").last().click();
     await expect(card).not.toBeVisible({ timeout: 5000 });
 
     // Published projects are public — verify it is gone from the public query.
