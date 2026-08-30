@@ -25,12 +25,16 @@ export const auth = betterAuth({
     autoSignInAfterVerification: false,
     expiresIn: 3600, // 1 hour
   },
-  socialProviders: {
-    github: {
-      clientId: process.env.GITHUB_CLIENT_ID as string,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET as string,
-    },
-  },
+  ...(process.env.GITHUB_CLIENT_ID && process.env.GITHUB_CLIENT_SECRET
+    ? {
+        socialProviders: {
+          github: {
+            clientId: process.env.GITHUB_CLIENT_ID,
+            clientSecret: process.env.GITHUB_CLIENT_SECRET,
+          },
+        },
+      }
+    : {}),
   user: {
     additionalFields: {
       role: { type: "string", defaultValue: "EDITOR" },
