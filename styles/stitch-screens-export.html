@@ -1,0 +1,708 @@
+<!-- Tessera Stitch Screens — HTML Reference Export
+     Generated from Stitch design system application.
+     Use as visual reference for Tailwind/Ant Design implementation.
+     Each section = one screen from the Stitch project.
+-->
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 1: Admin Dashboard
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab admin-sidebar__tab--active">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header">
+      <h1 class="page-title">Catalog Dashboard</h1>
+      <p class="page-subtitle">System status and content overview</p>
+    </div>
+
+    <section class="stats-grid mb-8">
+      <div class="stat-card">
+        <div class="stat-card__label">Total Projects</div>
+        <div class="stat-card__value">12</div>
+        <div class="stat-card__accession">STAT-01</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Total Posts</div>
+        <div class="stat-card__value">8</div>
+        <div class="stat-card__accession">STAT-02</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Published</div>
+        <div class="stat-card__value">15</div>
+        <div class="stat-card__accession">STAT-03</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-card__label">Draft</div>
+        <div class="stat-card__value">5</div>
+        <div class="stat-card__accession">STAT-04</div>
+      </div>
+    </section>
+
+    <section>
+      <h2 class="text-xl font-display mb-4">Recent Projects</h2>
+      <div class="grid grid-cols-2 gap-4">
+        <div class="catalog-card">
+          <div class="catalog-card__accession">
+            <span>PRJ-014</span>
+            <span class="status-badge status-badge--published">
+              <span class="status-badge__dot"></span>
+              Published
+            </span>
+          </div>
+          <h3 class="catalog-card__title">Government Portal Redesign</h3>
+          <p class="catalog-card__meta">Next.js · GraphQL · PostgreSQL</p>
+        </div>
+        <div class="catalog-card">
+          <div class="catalog-card__accession">
+            <span>PRJ-013</span>
+            <span class="status-badge status-badge--draft">
+              <span class="status-badge__dot"></span>
+              Draft
+            </span>
+          </div>
+          <h3 class="catalog-card__title">Healthcare Data Platform</h3>
+          <p class="catalog-card__meta">React · Apollo · MongoDB</p>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 2: Projects Management
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab admin-sidebar__tab--active">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Projects Archive</h1>
+        <p class="page-subtitle">Manage case studies and portfolio projects</p>
+      </div>
+      <button class="btn btn--primary">+ New Project</button>
+    </div>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>Accession</th>
+          <th>Title</th>
+          <th>Stack</th>
+          <th>Status</th>
+          <th>Updated</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-mono text-xs text-muted">PRJ-014</td>
+          <td>Government Portal Redesign</td>
+          <td class="font-mono text-xs">Next.js · GraphQL · PostgreSQL</td>
+          <td>
+            <span class="status-badge status-badge--published">
+              <span class="status-badge__dot"></span>
+              Published
+            </span>
+          </td>
+          <td class="font-mono text-xs text-muted">2026-08-15</td>
+        </tr>
+        <tr>
+          <td class="font-mono text-xs text-muted">PRJ-013</td>
+          <td>Healthcare Data Platform</td>
+          <td class="font-mono text-xs">React · Apollo · MongoDB</td>
+          <td>
+            <span class="status-badge status-badge--draft">
+              <span class="status-badge__dot"></span>
+              Draft
+            </span>
+          </td>
+          <td class="font-mono text-xs text-muted">2026-08-12</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 3: Secure Login
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="login-container">
+  <div class="login-card">
+    <div class="login-header">
+      <div class="login-logo">Tessera</div>
+      <p class="login-tagline">Structured content, one piece at a time.</p>
+    </div>
+
+    <form>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <input type="email" class="form-input" placeholder="curator@example.com" />
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <input type="password" class="form-input" placeholder="Enter password" />
+      </div>
+      <button type="submit" class="btn btn--primary" style="width: 100%; margin-top: 8px;">
+        Sign In
+      </button>
+    </form>
+
+    <p class="text-center mt-6 text-sm text-muted">
+      <a href="/forgot-password" class="text-moss">Forgot password?</a>
+    </p>
+  </div>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 4: Posts Management
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab admin-sidebar__tab--active">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Field Notes</h1>
+        <p class="page-subtitle">Blog posts and technical articles</p>
+      </div>
+      <button class="btn btn--primary">+ New Post</button>
+    </div>
+
+    <div class="grid gap-4">
+      <div class="catalog-card">
+        <div class="catalog-card__accession">
+          <span>POST-008</span>
+          <span class="status-badge status-badge--published">
+            <span class="status-badge__dot"></span>
+            Published
+          </span>
+        </div>
+        <h3 class="catalog-card__title">GraphQL Schema Design Patterns</h3>
+        <p class="catalog-card__meta">2026-08-10 · 8 min read</p>
+      </div>
+      <div class="catalog-card">
+        <div class="catalog-card__accession">
+          <span>POST-007</span>
+          <span class="status-badge status-badge--draft">
+            <span class="status-badge__dot"></span>
+            Draft
+          </span>
+        </div>
+        <h3 class="catalog-card__title">Building Accessible Admin Consoles</h3>
+        <p class="catalog-card__meta">2026-08-05 · 12 min read</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 5: Media Archive
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab admin-sidebar__tab--active">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Media Archive</h1>
+        <p class="page-subtitle">Images, documents, and assets</p>
+      </div>
+      <button class="btn btn--primary">+ Upload Media</button>
+    </div>
+
+    <div class="grid grid-cols-4 gap-4">
+      <div class="catalog-card" style="padding: 12px;">
+        <div style="aspect-ratio: 16/9; background: var(--color-chalk); border-radius: var(--radius-base); margin-bottom: 8px;"></div>
+        <p class="font-mono text-xs text-muted">IMG-001.png</p>
+        <p class="text-xs text-muted">2.4 MB</p>
+      </div>
+      <div class="catalog-card" style="padding: 12px;">
+        <div style="aspect-ratio: 16/9; background: var(--color-chalk); border-radius: var(--radius-base); margin-bottom: 8px;"></div>
+        <p class="font-mono text-xs text-muted">IMG-002.jpg</p>
+        <p class="text-xs text-muted">1.8 MB</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 6: Schema Configuration
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab admin-sidebar__tab--active">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header">
+      <h1 class="page-title">Schema Registry</h1>
+      <p class="page-subtitle">Manage GraphQL content types</p>
+    </div>
+
+    <div class="grid gap-4">
+      <div class="catalog-card">
+        <div class="catalog-card__accession">
+          <span>TYPE-001</span>
+          <span class="status-badge status-badge--published">
+            <span class="status-badge__dot"></span>
+            Active
+          </span>
+        </div>
+        <h3 class="catalog-card__title">Project</h3>
+        <p class="catalog-card__meta">8 fields · 12 entries</p>
+      </div>
+      <div class="catalog-card">
+        <div class="catalog-card__accession">
+          <span>TYPE-002</span>
+          <span class="status-badge status-badge--published">
+            <span class="status-badge__dot"></span>
+            Active
+          </span>
+        </div>
+        <h3 class="catalog-card__title">Post</h3>
+        <p class="catalog-card__meta">6 fields · 8 entries</p>
+      </div>
+      <div class="catalog-card">
+        <div class="catalog-card__accession">
+          <span>TYPE-003</span>
+          <span class="status-badge status-badge--published">
+            <span class="status-badge__dot"></span>
+            Active
+          </span>
+        </div>
+        <h3 class="catalog-card__title">Testimonial</h3>
+        <p class="catalog-card__meta">4 fields · 15 entries</p>
+      </div>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 7: GraphQL Schema Inspector
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab admin-sidebar__tab--active">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header">
+      <h1 class="page-title">Schema Inspector</h1>
+      <p class="page-subtitle">Explore your GraphQL schema</p>
+    </div>
+
+    <div class="catalog-card" style="font-family: var(--font-mono); font-size: 13px; line-height: 1.6;">
+      <div class="catalog-card__accession mb-4">
+        <span>SCHEMA-v1.0</span>
+        <span class="status-badge status-badge--published">
+          <span class="status-badge__dot"></span>
+          Introspection ON
+        </span>
+      </div>
+      <pre style="margin: 0; white-space: pre-wrap;"><span class="text-muted">type</span> <span class="text-moss">Project</span> {
+  <span class="text-muted">id</span>: <span class="text-ochre">ID!</span>
+  <span class="text-muted">titleEn</span>: <span class="text-ochre">String</span>
+  <span class="text-muted">titleAr</span>: <span class="text-ochre">String</span>
+  <span class="text-muted">stack</span>: [<span class="text-ochre">String!</span>]
+  <span class="text-muted">status</span>: <span class="text-ochre">ContentStatus!</span>
+  <span class="text-muted">accessionNumber</span>: <span class="text-ochre">String!</span>
+}</pre>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 8: Create New Project
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab admin-sidebar__tab--active">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header">
+      <h1 class="page-title">New Project</h1>
+      <p class="page-subtitle">Add a new entry to the archive</p>
+    </div>
+
+    <div class="catalog-card">
+      <form>
+        <div class="form-group">
+          <label class="form-label">Title (English)</label>
+          <input type="text" class="form-input" placeholder="Project title in English" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title (Arabic)</label>
+          <input type="text" class="form-input" dir="rtl" placeholder="عنوان المشروع بالعربية" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stack</label>
+          <input type="text" class="form-input" placeholder="Next.js · GraphQL · PostgreSQL" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-input form-textarea" placeholder="Brief project description..."></textarea>
+        </div>
+        <div class="flex gap-3 mt-6">
+          <button type="submit" class="btn btn--primary">Save Project</button>
+          <button type="button" class="btn btn--secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 9: Project Editor
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab admin-sidebar__tab--active">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Edit Project</h1>
+        <p class="page-subtitle font-mono text-xs">PRJ-014 · Government Portal Redesign</p>
+      </div>
+      <div class="flex gap-3">
+        <button class="btn btn--secondary">Preview</button>
+        <button class="btn btn--primary">Save Changes</button>
+      </div>
+    </div>
+
+    <div class="catalog-card">
+      <form>
+        <div class="form-group">
+          <label class="form-label">Title (English)</label>
+          <input type="text" class="form-input" value="Government Portal Redesign" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Title (Arabic)</label>
+          <input type="text" class="form-input" dir="rtl" value="إعادة تصميم البوابة الحكومية" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Stack</label>
+          <input type="text" class="form-input" value="Next.js · GraphQL · PostgreSQL" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Description</label>
+          <textarea class="form-input form-textarea">A comprehensive redesign of the government services portal, focusing on accessibility and performance.</textarea>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Status</label>
+          <select class="form-input">
+            <option value="PUBLISHED" selected>Published</option>
+            <option value="DRAFT">Draft</option>
+          </select>
+        </div>
+      </form>
+    </div>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 10: Users Management
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+<div class="admin-layout">
+  <aside class="admin-sidebar">
+    <div class="admin-sidebar__logo">Tessera</div>
+    <nav class="admin-sidebar__nav">
+      <a href="/admin" class="admin-sidebar__tab">Catalog Dashboard</a>
+      <a href="/admin/projects" class="admin-sidebar__tab">Projects Archive</a>
+      <a href="/admin/posts" class="admin-sidebar__tab">Field Notes</a>
+      <a href="/admin/media" class="admin-sidebar__tab">Media Archive</a>
+      <a href="/admin/schema" class="admin-sidebar__tab">Schema Registry</a>
+      <a href="/admin/users" class="admin-sidebar__tab admin-sidebar__tab--active">Curators</a>
+    </nav>
+  </aside>
+
+  <main class="admin-main">
+    <div class="page-header flex justify-between items-center">
+      <div>
+        <h1 class="page-title">Curators</h1>
+        <p class="page-subtitle">Manage user accounts and roles</p>
+      </div>
+      <button class="btn btn--primary">+ Invite Curator</button>
+    </div>
+
+    <table class="admin-table">
+      <thead>
+        <tr>
+          <th>User</th>
+          <th>Email</th>
+          <th>Role</th>
+          <th>Status</th>
+          <th>Joined</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td class="font-medium">Admin User</td>
+          <td class="font-mono text-xs">admin@tessera.dev</td>
+          <td>
+            <span class="status-badge status-badge--published">
+              <span class="status-badge__dot"></span>
+              Admin
+            </span>
+          </td>
+          <td>
+            <span class="status-badge status-badge--published">
+              <span class="status-badge__dot"></span>
+              Active
+            </span>
+          </td>
+          <td class="font-mono text-xs text-muted">2026-01-15</td>
+        </tr>
+        <tr>
+          <td class="font-medium">Content Editor</td>
+          <td class="font-mono text-xs">editor@tessera.dev</td>
+          <td>
+            <span class="status-badge status-badge--draft">
+              <span class="status-badge__dot"></span>
+              Editor
+            </span>
+          </td>
+          <td>
+            <span class="status-badge status-badge--published">
+              <span class="status-badge__dot"></span>
+              Active
+            </span>
+          </td>
+          <td class="font-mono text-xs text-muted">2026-03-22</td>
+        </tr>
+      </tbody>
+    </table>
+  </main>
+</div>
+
+
+<!-- ═══════════════════════════════════════════════════════════════════════════════
+     SCREEN 11-16: Public Pages (Home, Project Detail, Post Detail, Schema View)
+     ═══════════════════════════════════════════════════════════════════════════════ -->
+
+<!-- SCREEN 11: Public Home -->
+<main class="page-container">
+  <header class="page-header">
+    <h1 class="page-title text-3xl">Tessera</h1>
+    <p class="page-subtitle">Structured content, one piece at a time.</p>
+  </header>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="catalog-card">
+      <div class="catalog-card__accession">
+        <span>PRJ-001</span>
+        <span class="status-badge status-badge--published">
+          <span class="status-badge__dot"></span>
+          Published
+        </span>
+      </div>
+      <h3 class="catalog-card__title">Government Portal Redesign</h3>
+      <p class="catalog-card__meta">Next.js · GraphQL · PostgreSQL</p>
+    </div>
+    <div class="catalog-card">
+      <div class="catalog-card__accession">
+        <span>PRJ-002</span>
+        <span class="status-badge status-badge--published">
+          <span class="status-badge__dot"></span>
+          Published
+        </span>
+      </div>
+      <h3 class="catalog-card__title">Healthcare Data Platform</h3>
+      <p class="catalog-card__meta">React · Apollo · MongoDB</p>
+    </div>
+  </div>
+
+  <footer class="mt-10 font-mono text-xs text-muted">
+    Explore the live schema at <code>/api/graphql</code> via Apollo Sandbox or GraphiQL.
+  </footer>
+</main>
+
+
+<!-- SCREEN 12: Project Detail -->
+<main class="page-container">
+  <a href="/" class="text-moss text-sm" style="text-decoration: none;">&larr; Back to Archive</a>
+
+  <article class="mt-6">
+    <header class="catalog-card__accession mb-4">
+      <span class="font-mono text-xs text-muted">PRJ-014</span>
+      <span class="status-badge status-badge--published">
+        <span class="status-badge__dot"></span>
+        Published
+      </span>
+    </header>
+
+    <h1 class="page-title text-3xl mb-2">Government Portal Redesign</h1>
+    <p class="font-mono text-xs text-muted mb-8">Next.js · GraphQL · PostgreSQL · 2026</p>
+
+    <div class="catalog-card">
+      <h2 class="font-display text-lg mb-4">Overview</h2>
+      <p class="text-muted">A comprehensive redesign of the government services portal, focusing on accessibility, performance, and bilingual support (English/Arabic).</p>
+    </div>
+
+    <div class="catalog-card mt-4">
+      <h2 class="font-display text-lg mb-4">Technical Details</h2>
+      <dl class="grid grid-cols-2 gap-4">
+        <div>
+          <dt class="font-mono text-xs text-muted uppercase">Stack</dt>
+          <dd class="mt-1">Next.js · GraphQL · PostgreSQL</dd>
+        </div>
+        <div>
+          <dt class="font-mono text-xs text-muted uppercase">Status</dt>
+          <dd class="mt-1">Published</dd>
+        </div>
+      </dl>
+    </div>
+  </article>
+</main>
+
+
+<!-- SCREEN 13: Post Detail -->
+<main class="page-container">
+  <a href="/posts" class="text-moss text-sm" style="text-decoration: none;">&larr; Back to Field Notes</a>
+
+  <article class="mt-6">
+    <header class="catalog-card__accession mb-4">
+      <span class="font-mono text-xs text-muted">POST-008</span>
+      <span class="status-badge status-badge--published">
+        <span class="status-badge__dot"></span>
+        Published
+      </span>
+    </header>
+
+    <h1 class="page-title text-3xl mb-2">GraphQL Schema Design Patterns</h1>
+    <p class="font-mono text-xs text-muted mb-8">2026-08-10 · 8 min read</p>
+
+    <div class="catalog-card">
+      <div class="prose" style="max-width: 65ch;">
+        <p>When designing GraphQL schemas for content management systems, several patterns emerge that help maintain flexibility while enforcing structure...</p>
+      </div>
+    </div>
+  </article>
+</main>
+
+
+<!-- SCREEN 14: Public Schema View -->
+<main class="page-container">
+  <header class="page-header">
+    <h1 class="page-title">Schema Explorer</h1>
+    <p class="page-subtitle">Public GraphQL schema documentation</p>
+  </header>
+
+  <div class="catalog-card" style="font-family: var(--font-mono); font-size: 13px; line-height: 1.6;">
+    <div class="catalog-card__accession mb-4">
+      <span>SCHEMA-v1.0</span>
+      <span class="status-badge status-badge--published">
+        <span class="status-badge__dot"></span>
+        Introspection ON
+      </span>
+    </div>
+    <pre style="margin: 0; white-space: pre-wrap;">type Query {
+  projects: [Project!]!
+  project(id: ID!): Project
+  posts: [Post!]!
+  post(id: ID!): Post
+}</pre>
+  </div>
+
+  <div class="catalog-card mt-4">
+    <h2 class="font-display text-lg mb-4">Types</h2>
+    <div class="grid gap-3">
+      <div class="flex justify-between items-center p-3 border rounded-base">
+        <span class="font-mono text-sm">Project</span>
+        <span class="text-xs text-muted">8 fields</span>
+      </div>
+      <div class="flex justify-between items-center p-3 border rounded-base">
+        <span class="font-mono text-sm">Post</span>
+        <span class="text-xs text-muted">6 fields</span>
+      </div>
+      <div class="flex justify-between items-center p-3 border rounded-base">
+        <span class="font-mono text-sm">Testimonial</span>
+        <span class="text-xs text-muted">4 fields</span>
+      </div>
+    </div>
+  </div>
+</main>

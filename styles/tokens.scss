@@ -1,0 +1,57 @@
+// styles/tokens.scss
+// SINGLE SOURCE OF TRUTH for all Tessera design tokens (Constitution Article V, Article X).
+// Consumed by: tailwind.config.ts, lib/theme/antd-theme.ts, and directly by any component.
+// Do NOT redeclare these values anywhere else — import/reference this file instead.
+// See DESIGN.md for the rationale behind every value.
+
+// ---- Light theme (default) ----
+$chalk-light: #f1f0ec;
+$surface-light: #ffffff;
+$graphite-light: #22262b;
+$muted-light: #6b6f73;
+$moss-light: #3b5d50;
+$ochre-light: #c98a3c;
+$clay-line-light: #d8d5cc;
+
+// ---- Dark theme ----
+$chalk-dark: #1b1f23;
+$surface-dark: #24292e;
+$graphite-dark: #f1f0ec;
+$muted-dark: #9a9ea2;
+$moss-dark: #5c8b79;
+$ochre-dark: #d9a05b;
+$clay-line-dark: #33383d;
+
+// ---- Typography ----
+$font-display: "Fraunces", serif;
+$font-body: "Public Sans", system-ui, sans-serif;
+$font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+// ---- Shape ----
+$radius-base: 4px;
+
+:root {
+  --color-chalk: #{$chalk-light};
+  --color-surface: #{$surface-light};
+  --color-graphite: #{$graphite-light};
+  --color-muted: #{$muted-light};
+  --color-moss: #{$moss-light};
+  --color-ochre: #{$ochre-light};
+  --color-clay-line: #{$clay-line-light};
+
+  --font-display: #{$font-display};
+  --font-body: #{$font-body};
+  --font-mono: #{$font-mono};
+
+  --radius-base: #{$radius-base};
+}
+
+[data-theme="dark"] {
+  --color-chalk: #{$chalk-dark};
+  --color-surface: #{$surface-dark};
+  --color-graphite: #{$graphite-dark};
+  --color-muted: #{$muted-dark};
+  --color-moss: #{$moss-dark};
+  --color-ochre: #{$ochre-dark};
+  --color-clay-line: #{$clay-line-dark};
+}
