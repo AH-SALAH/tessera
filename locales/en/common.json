@@ -1,0 +1,217 @@
+{
+  "common": {
+    "loading": "Loading…",
+    "cancel": "Cancel",
+    "close": "Close"
+  },
+  "status": {
+    "published": "Published",
+    "draft": "Draft"
+  },
+  "nav": {
+    "projects": "Projects",
+    "posts": "Posts",
+    "testimonials": "Testimonials",
+    "users": "Users",
+    "dashboard": "Dashboard",
+    "database": "Database",
+    "logs": "Logs",
+    "signOut": "Sign out",
+    "language": "Language",
+    "switchToAr": "العربية",
+    "switchToEn": "English"
+  },
+  "content": {
+    "slug": "Slug",
+    "addNew": "+ Add new",
+    "publish": "Publish",
+    "publishAdminOnly": "Only an Admin can publish",
+    "delete": "Delete",
+    "edit": "Edit",
+    "title": "Title",
+    "titleEn": "Title (English)",
+    "titleAr": "Title (Arabic)",
+    "description": "Description",
+    "descriptionEn": "Description (English)",
+    "descriptionAr": "Description (Arabic)",
+    "coverAsset": "Cover Asset",
+    "replaceImage": "Replace Image",
+    "stack": "Tech Stack (comma-separated)",
+    "liveUrl": "Live URL",
+    "metadata": "Metadata",
+    "author": "Author",
+    "tags": "Tags",
+    "addTag": "Add Tag",
+    "created": "Created",
+    "modified": "Modified",
+    "noContent": "No content yet",
+    "createFirst": "Create your first item to get started",
+    "untitled": "Untitled",
+    "successful": "successful"
+  },
+  "users": {
+    "email": "Email",
+    "name": "Name",
+    "role": "Role",
+    "invite": "Invite User",
+    "editRole": "Edit User Role",
+    "deleteConfirm": "Are you sure you want to delete",
+    "deleteWarning": "This action cannot be undone. The user will lose access to their account immediately.",
+    "inviteHint": "An invitation email will be sent with a link to set their password.",
+    "invited": "Invitation sent — email dispatched",
+    "failedInvite": "Failed to invite user",
+    "roleUpdated": "Role updated",
+    "failedRole": "Failed to update role",
+    "deleted": "User deleted",
+    "failedDelete": "Failed to delete user",
+    "selectRole": "Select role",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email",
+    "pendingInvitations": "Pending Invitations",
+    "pending": "Pending",
+    "status": "Status",
+    "resendInvite": "Resend Invitation",
+    "inviteResent": "Invitation resent",
+    "failedResend": "Failed to resend invitation"
+  },
+  "projects": {
+    "title": "Projects",
+    "addNew": "Add new",
+    "create": "Create Project",
+    "edit": "Edit Project",
+    "deleteConfirm": "Delete Project",
+    "deleteMessage": "Are you sure you want to delete",
+    "deleteWarning": "This action cannot be undone. All project data will be permanently removed.",
+    "failedDelete": "Failed to delete",
+    "updated": "Project updated",
+    "failedUpdate": "Failed to update project",
+    "published": "Project published",
+    "failedPublish": "Failed to publish",
+    "saved": "Draft saved",
+    "failedSave": "Failed to save draft",
+    "created": "Project created",
+    "failedCreate": "Failed to create project",
+    "publishChanges": "Publish Changes",
+    "saveDraft": "Save Draft"
+  },
+  "dashboard": {
+    "stats": "Catalog Statistics",
+    "totalProjects": "Total Projects",
+    "published": "Published",
+    "totalUsers": "Total Users",
+    "draftsPending": "Drafts Pending",
+    "recentProjects": "Recent Projects",
+    "viewAll": "View All",
+    "noProjects": "No projects yet. Create your first one to get started.",
+    "lastUpdated": "Last updated:"
+  },
+  "signin": {
+    "title": "Sign In",
+    "tagline": "Structured content, one piece at a time.",
+    "emailLabel": "Email",
+    "passwordLabel": "Password",
+    "emailRequired": "Email is required",
+    "invalidEmail": "Invalid email",
+    "passwordRequired": "Password is required",
+    "invalidCredentials": "Invalid email or password",
+    "error": "An error occurred. Please try again.",
+    "noRegistration": "No public registration. Contact an admin for access."
+  },
+  "acceptInvite": {
+    "tagline": "Accept your invitation to Tessera",
+    "nameLabel": "Your Name",
+    "nameRequired": "Name is required",
+    "passwordLabel": "Set Password",
+    "passwordRequired": "Password is required",
+    "passwordMin": "Password must be at least 8 characters",
+    "submit": "Accept Invitation",
+    "invalidLink": "Invalid or missing invitation link",
+    "expired": "This invitation has expired. Please request a new one.",
+    "alreadyRegistered": "An account with this email already exists.",
+    "failed": "Failed to accept invitation. Please try again."
+  },
+  "public": {
+    "tagline": "Structured content, one piece at a time.",
+    "schemaNote": "Explore the live schema at",
+    "schemaVia": "via Apollo Sandbox or GraphiQL — introspection is deliberately left on (FR-002)."
+  },
+  "theme": {
+    "light": "Light",
+    "dark": "Dark",
+    "system": "System",
+    "label": "Theme",
+    "ariaLabel": "Current theme: {theme}. Click to change."
+  },
+  "aria": {
+    "toggleMenu": "Toggle menu",
+    "removeTag": "Remove {tag}",
+    "currentLanguage": "Current language: {language}. Click to change."
+  },
+  "landing": {
+    "features": "Features",
+    "getStarted": "Get Started",
+    "hero": {
+      "title": "The CMS built like an archival index.",
+      "description": "Structure your content with the precision of a museum catalog. Every entry is a specimen — typed, tagged, and preserved for permanent reference.",
+      "cta": "Enter the Drawer"
+    },
+    "featuresSection": {
+      "title": "Precision in Publishing",
+      "description": "We discarded the generic SaaS gloss and built an interface that respects your content like a curator handles artifacts.",
+      "catalog": "CATALOG ENTRIES",
+      "publishedProjects": "Published Projects"
+    },
+    "feature1": {
+      "title": "Structured Archives",
+      "description": "Organize content entries exactly like physical index cards — with rigid schema, typed fields, and immutable metadata."
+    },
+    "feature2": {
+      "title": "Rigid Schema",
+      "description": "Define robust relationships using GraphQL. Every field is typed, validated, and documented at the schema level."
+    },
+    "feature3": {
+      "title": "Content Specimens",
+      "description": "Every piece of data is treated as a permanent artifact — versioned, timestamped, and preserved for long-term reference."
+    },
+    "checks": {
+      "versionControl": "Version Control Archiving",
+      "typedBlocks": "Typed Block Content",
+      "taxonomy": "Advanced Taxonomy Engine"
+    },
+    "footer": {
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "copyright": "Tessera CMS. All rights reserved."
+    }
+  },
+  "aiDraftAssist": {
+    "cta": "Generate draft with AI",
+    "loading": "Generating…",
+    "unavailable": "AI draft assist is temporarily unavailable",
+    "tone": {
+      "academic": "Academic Formal",
+      "curatorial": "Curatorial Summary",
+      "exhibition": "Public Exhibition"
+    },
+    "input": {
+      "bullets": "Bullet Points / Core Facts",
+      "bulletsPlaceholder": "- Found in sector 4B...\n- Carbon dated to ~4500 BCE...\n- Incised geometric patterns...",
+      "tone": "Tone / Style"
+    },
+    "output": {
+      "reqId": "REQ-ID: GEN-2948-AX",
+      "draftTitle": "Draft Description",
+      "statusPending": "Pending Generation",
+      "statusGenerating": "Generating…",
+      "statusReady": "Ready",
+      "emptyState": "Enter bullet points and click Generate to create a draft."
+    },
+    "modal": {
+      "title": "AI Draft Assist",
+      "generating": "Generating draft content…",
+      "apply": "Apply to Field",
+      "cancel": "Discard",
+      "seoSummary": "SEO Summary"
+    }
+  }
+}
