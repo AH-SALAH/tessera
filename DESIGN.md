@@ -42,7 +42,7 @@ PulseFeed's cold, live-data, oscilloscope register.
 | `--color-graphite`  | `#22262B` | Primary text — near-black, warmed slightly, not pure `#000`                          |
 | `--color-muted`     | `#686C70` | Secondary text, metadata, timestamps                                                 |
 | `--color-moss`      | `#3B5D50` | Primary accent — published/confirmed state, primary actions                          |
-| `--color-ochre`     | `#C98A3C` | Secondary accent — draft/pending state, highlights                                   |
+| `--color-ochre`     | `#8E6530` | Secondary accent — draft/pending state, highlights                                   |
 | `--color-clay-line` | `#D8D5CC` | Hairline borders, card edges — warm gray, not a stark black rule                     |
 
 **Color — Dark theme** (a genuine second theme, not an inversion)

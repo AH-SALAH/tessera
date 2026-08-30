@@ -70,7 +70,7 @@ After: Uses `<div class="admin-layout">` wrapper only.
 | `--color-graphite`  | `#22262B` | `#F1F0EC` | Primary text               |
 | `--color-muted`     | `#686C70` | `#9A9EA2` | Secondary text             |
 | `--color-moss`      | `#3B5D50` | `#4E7D6E` | Primary accent (published) |
-| `--color-ochre`     | `#C98A3C` | `#D9A05B` | Secondary accent (draft)   |
+| `--color-ochre`     | `#8E6530` | `#D9A05B` | Secondary accent (draft)   |
 | `--color-clay-line` | `#D8D5CC` | `#33383D` | Hairline borders           |
 
 ## Typography

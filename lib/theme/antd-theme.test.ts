@@ -19,7 +19,7 @@ describe("buildAntdThemeConfig", () => {
           getPropertyValue: (name: string) => {
             const vars: Record<string, string> = {
               "--color-moss": "#3B5D50",
-              "--color-ochre": "#C98A3C",
+              "--color-ochre": "#8E6530",
               "--color-chalk": "#F1F0EC",
               "--color-surface": "#FFFFFF",
               "--color-graphite": "#22262B",
@@ -37,7 +37,7 @@ describe("buildAntdThemeConfig", () => {
     const token = config.token!;
 
     expect(token.colorPrimary).toBe("#3B5D50");
-    expect(token.colorWarning).toBe("#C98A3C");
+    expect(token.colorWarning).toBe("#8E6530");
     expect(token.colorBgBase).toBe("#F1F0EC");
     expect(token.colorBgContainer).toBe("#FFFFFF");
     expect(token.colorText).toBe("#22262B");

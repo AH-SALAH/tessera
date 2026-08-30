@@ -32,7 +32,7 @@ test.describe("Admin Flow", () => {
     const createResponse = await request.post("/api/graphql", {
       headers: { Cookie: `better-auth.session_token=${editorToken}` },
       data: {
-        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "${uniqueTitle}" }) { id } }`,
+        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "${uniqueTitle}", descriptionEn: "Test project description" }) { id } }`,
       },
     });
     const createBody = await createResponse.json();
@@ -116,7 +116,7 @@ test.describe("Admin Flow", () => {
     const createResponse = await request.post("/api/graphql", {
       headers: { Cookie: `better-auth.session_token=${adminToken}` },
       data: {
-        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "${uniqueTitle}" }) { id } }`,
+        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "${uniqueTitle}", descriptionEn: "Test project description" }) { id } }`,
       },
     });
     const createBody = await createResponse.json();

@@ -72,7 +72,7 @@ test.describe("Editor Flow", () => {
     const createResponse = await request.post("/api/graphql", {
       headers: { Cookie: `better-auth.session_token=${editor2Token}` },
       data: {
-        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "Editor2 Project" }) { id } }`,
+        query: `mutation { createProject(input: { slug: "${uniqueSlug}", titleEn: "Editor2 Project", descriptionEn: "Test description" }) { id } }`,
       },
     });
     const createBody = await createResponse.json();
