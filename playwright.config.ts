@@ -19,10 +19,6 @@ export default defineConfig({
       name: "chromium-en-light",
       use: { ...devices["Desktop Chrome"], locale: "en-US", colorScheme: "light" },
     },
-    {
-      name: "chromium-en-dark",
-      use: { ...devices["Desktop Chrome"], locale: "en-US", colorScheme: "dark" },
-    },
   ],
   webServer: {
     command: "npm run start",
