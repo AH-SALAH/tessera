@@ -1,0 +1,155 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+# Cancel in-progress runs for the same branch/PR to save resources
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+env:
+  DATABASE_URL: ${{ secrets.DATABASE_URL }}
+  OPENROUTER_API_KEY: ${{ secrets.OPENROUTER_API_KEY }}
+  OPENROUTER_MODEL: openrouter/free
+  GITHUB_CLIENT_ID: ${{ secrets.GITHUB_CLIENT_ID }}
+  GITHUB_CLIENT_SECRET: ${{ secrets.GITHUB_CLIENT_SECRET }}
+  FEATURE_AI_DRAFT_ASSIST: "true"
+  SEED_ADMIN_EMAIL: ${{ secrets.SEED_ADMIN_EMAIL }}
+  BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+  BETTER_AUTH_URL: http://localhost:3000
+  NEXT_PUBLIC_APP_URL: http://localhost:3000
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run typecheck
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npm run lint
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run test
+
+  design-token-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx vitest run lib/theme/design-token-audit.test.ts
+
+  e2e-tests:
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npx playwright install --with-deps chromium
+      - run: npm run build
+      - run: npm run start &
+        env:
+          PORT: 3000
+      - run: sleep 10
+      - run: npm run test:e2e
+
+  graphql-schema-diff:
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run build
+      - run: npm run start &
+        env:
+          PORT: 3000
+      - run: sleep 10
+      - name: Export schema via introspection
+        run: node scripts/export-schema.mjs
+      - name: Diff against committed schema
+        run: |
+          if [ ! -f schema-introspection.json ]; then
+            echo "No committed schema baseline found. Saving current schema as baseline."
+            cp schema-introspection.json schema-introspection.baseline.json
+            exit 0
+          fi
+          cp schema-introspection.json schema-introspection.current.json
+          cp schema-introspection.json schema-introspection.baseline.json
+          if ! diff -u schema-introspection.baseline.json schema-introspection.current.json; then
+            echo ""
+            echo "Schema has changed! Update the baseline with:"
+            echo "  cp schema-introspection.current.json schema-introspection.json"
+            echo "  git add schema-introspection.json"
+            exit 1
+          fi
+          echo "Schema matches baseline."
+
+  storybook:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run build-storybook
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: [typecheck, lint]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "npm"
+      - run: npm ci
+      - run: npx prisma generate
+      - run: npm run build
+      - name: Lighthouse CI (both locales, both themes)
+        run: npx lhci autorun --config=lighthouserc.mjs
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}

@@ -1,0 +1,85 @@
+name: Feature Request
+description: Suggest a new feature or improvement
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature! Please describe what you'd like to see.
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Feature Category
+      options:
+        - Content Management (CRUD, fields, workflows)
+        - Admin Console (UI, UX, navigation)
+        - GraphQL API (schema, resolvers, queries)
+        - Authentication & Authorization
+        - Localization (EN/AR, RTL)
+        - Theming (light/dark, design tokens)
+        - AI / Draft Assist
+        - Performance
+        - Developer Experience
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem Statement
+      description: What problem does this feature solve? Is it related to a frustration?
+      placeholder: "I'm always frustrated when..."
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe the solution you'd like.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives Considered
+      description: Any alternative solutions or features you've considered.
+    validations:
+      required: false
+
+  - type: dropdown
+    id: phase
+    attributes:
+      label: Roadmap Phase
+      description: Which phase does this fit into? (see CHANGELOG.md)
+      options:
+        - Phase 1 — Content Polish (rich text, media, scheduling, workflows)
+        - Phase 2 — Platform Features (multi-tenant, webhooks, REST, versioning)
+        - Phase 3 — Extensibility (plugins, custom fields, per-tenant limits)
+        - Not on roadmap yet
+    validations:
+      required: true
+
+  - type: dropdown
+    id: scope
+    attributes:
+      label: Scope
+      options:
+        - Small (hours of work)
+        - Medium (1-2 days)
+        - Large (multi-day)
+        - Epic (needs breaking down)
+    validations:
+      required: true
+
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional Context
+      description: Mockups, screenshots, links to similar features in other apps, etc.
+    validations:
+      required: false

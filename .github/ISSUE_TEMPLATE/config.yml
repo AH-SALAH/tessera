@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Documentation
+    url: https://github.com/your-org/tessera#readme
+    about: Read the README and CONTRIBUTING guide before opening an issue
