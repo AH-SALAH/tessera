@@ -105,7 +105,7 @@ npm run dev
 
 ## Tech Stack
 
-<div align="center">
+<div align="left">
 
 |     Layer     | Technology                                  |
 | :-----------: | ------------------------------------------- |
@@ -238,7 +238,7 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for setup instructions, development w
 
 ---
 
-<div align="center">
+<div align="left">
 
 ## License
 
