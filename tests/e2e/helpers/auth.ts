@@ -25,7 +25,12 @@ export async function getSessionToken(
     // session cookies without an Origin header — declare it explicitly.
     headers: { Origin: "http://localhost:3000" },
   });
-  expect(response.status(), `sign-in failed for ${user}`).toBe(200);
+  if (response.status() !== 200) {
+    const body = await response.text().catch(() => "<no body>");
+    throw new Error(
+      `sign-in failed for ${user} (${email}): status ${response.status()}\n${body}`,
+    );
+  }
   const setCookie = response.headers()["set-cookie"] ?? "";
   const token = setCookie.split("better-auth.session_token=")[1]?.split(";")[0] ?? "";
   expect(token, `no session token in Set-Cookie for ${user}`).toBeTruthy();
