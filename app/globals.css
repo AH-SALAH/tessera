@@ -1,0 +1,452 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors */
+  --color-chalk: #f1f0ec;
+  --color-surface: #ffffff;
+  --color-graphite: #22262b;
+  --color-muted: #6b6f73;
+  --color-moss: #3b5d50;
+  --color-ochre: #c98a3c;
+  --color-clay-line: #d8d5cc;
+
+  /* Stitch Design Tokens */
+  --color-primary: #244539;
+  --color-on-primary: #ffffff;
+  --color-on-surface: #181c21;
+  --color-on-surface-variant: #414845;
+  --color-surface-card: #ffffff;
+  --color-surface-container-low: #f1f4fa;
+  --color-ochre-draft: #c98a3c;
+  --color-moss-published: #3b5d50;
+
+  /* Typography */
+  --font-display: "Fraunces", serif;
+  --font-body: "Public Sans", system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Stitch Typography Tokens */
+  --font-accession-number: "IBM Plex Mono";
+  --font-data-label: "IBM Plex Mono";
+  --font-headline-md: "Fraunces";
+  --font-headline-lg: "Fraunces";
+  --font-body-sm: "Public Sans";
+  --font-body-md: "Public Sans";
+
+  /* Font Sizes */
+  --text-accession-number: 11px;
+  --text-data-label: 12px;
+  --text-headline-md: 24px;
+  --text-headline-lg: 32px;
+  --text-body-sm: 14px;
+  --text-body-md: 16px;
+
+  /* Shape */
+  --radius-base: 4px;
+  --radius-lg: 4px;
+  --radius-xl: 8px;
+  --radius-full: 50%;
+
+  /* Spacing Scale */
+  --spacing-unit: 4px;
+  --spacing-margin-edge: 32px;
+  --spacing-card-padding: 24px;
+  --spacing-gutter-md: 16px;
+  --spacing-stack-gap: 12px;
+
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --space-10: 40px;
+  --space-12: 48px;
+}
+
+[data-theme="dark"] {
+  --color-chalk: #1b1f23;
+  --color-surface: #24292e;
+  --color-graphite: #f1f0ec;
+  --color-muted: #9a9ea2;
+  --color-moss: #5c8b79;
+  --color-ochre: #d9a05b;
+  --color-clay-line: #33383d;
+
+  --color-primary: #5c8b79;
+  --color-on-primary: #ffffff;
+  --color-on-surface: #f1f0ec;
+  --color-on-surface-variant: #9a9ea2;
+  --color-surface-card: #24292e;
+  --color-surface-container-low: #1b1f23;
+}
+
+body {
+  background-color: var(--color-chalk);
+  color: var(--color-graphite);
+  font-family: var(--font-body);
+}
+
+/* Arabic font override */
+[dir="rtl"] body {
+  font-family: var(--font-body-ar), var(--font-body), system-ui, sans-serif;
+}
+
+/* Scrollbar (subtle, catalog-appropriate) */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-chalk);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-clay-line);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-muted);
+}
+
+/* ─── Login Screen ─────────────────────────────────────────────────────────── */
+
+.login-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--color-chalk);
+}
+
+.login-card {
+  width: 100%;
+  max-width: 400px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-clay-line);
+  border-radius: var(--radius-base);
+  padding: 32px;
+}
+
+.login-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.login-logo {
+  font-family: var(--font-display);
+  font-size: 28px;
+  color: var(--color-graphite);
+}
+
+.login-tagline {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-muted);
+  margin-top: 8px;
+}
+
+/* ─── Forms ────────────────────────────────────────────────────────────────── */
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  color: var(--color-graphite);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-clay-line);
+  border-radius: var(--radius-base);
+  transition: border-color 0.15s ease;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--color-moss);
+  box-shadow: 0 0 0 2px rgba(59, 93, 80, 0.15);
+}
+
+.form-input::placeholder {
+  color: var(--color-muted);
+}
+
+/* ─── Buttons ──────────────────────────────────────────────────────────────── */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 20px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 500;
+  border: 1px solid transparent;
+  border-radius: var(--radius-base);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.btn--primary {
+  background-color: var(--color-moss);
+  color: #ffffff;
+  border-color: var(--color-moss);
+}
+
+.btn--primary:hover {
+  background-color: #2e4a40;
+}
+
+.btn--primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn--secondary {
+  background-color: transparent;
+  color: var(--color-graphite);
+  border-color: var(--color-clay-line);
+}
+
+.btn--secondary:hover {
+  border-color: var(--color-moss);
+  color: var(--color-moss);
+}
+
+/* ─── Focus States (WCAG 2.1 AA, Moss accent, 2px) ────────────────────────── */
+
+:focus-visible {
+  outline: 2px solid var(--color-moss);
+  outline-offset: 2px;
+}
+
+/* ─── Ant Design Overrides ─────────────────────────────────────────────────── */
+
+.ant-btn-primary {
+  background-color: var(--color-moss) !important;
+  border-color: var(--color-moss) !important;
+}
+
+.ant-btn-primary:hover {
+  background-color: #2e4a40 !important;
+  border-color: #2e4a40 !important;
+}
+
+.ant-input,
+.ant-input-password {
+  border-color: var(--color-clay-line) !important;
+}
+
+.ant-input:focus,
+.ant-input-focused,
+.ant-input-password:focus,
+.ant-input-password-focused {
+  border-color: var(--color-moss) !important;
+  box-shadow: 0 0 0 2px rgba(59, 93, 80, 0.15) !important;
+}
+
+.ant-form-item-label > label {
+  font-family: var(--font-mono) !important;
+  font-size: 12px !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.5px !important;
+  color: var(--color-muted) !important;
+}
+
+.ant-alert-error {
+  border-color: var(--color-ochre) !important;
+  background-color: rgba(201, 138, 60, 0.1) !important;
+}
+
+.ant-alert-error .ant-alert-message {
+  color: var(--color-ochre) !important;
+}
+
+/* ─── Dropdown / Menu (Tessera theming) ─────────────────────────────────── */
+
+.tessera-dropdown {
+  background-color: var(--color-surface) !important;
+  border: 1px solid var(--color-clay-line) !important;
+  border-radius: var(--radius-base) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1) !important;
+  padding: var(--space-1) 0 !important;
+}
+
+[data-theme="dark"] .tessera-dropdown {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4) !important;
+}
+
+[data-theme="dark"] .tessera-dropdown ul {
+  background-color: var(--color-surface);
+}
+
+.tessera-dropdown .ant-dropdown-menu-item {
+  font-family: var(--font-body) !important;
+  font-size: 14px !important;
+  color: var(--color-graphite) !important;
+  padding: var(--space-2) var(--space-4) !important;
+  border-radius: 0 !important;
+  transition:
+    background-color 0.15s ease,
+    color 0.15s ease !important;
+}
+
+.tessera-dropdown .ant-dropdown-menu-item:hover {
+  background-color: var(--color-clay-line) !important;
+  color: var(--color-moss) !important;
+}
+
+.tessera-dropdown .ant-dropdown-menu-item-selected {
+  background-color: var(--color-chalk) !important;
+  color: var(--color-moss) !important;
+}
+
+.tessera-dropdown .ant-dropdown-menu-item-icon {
+  color: var(--color-muted) !important;
+}
+
+.tessera-dropdown .ant-dropdown-menu-item:hover .ant-dropdown-menu-item-icon {
+  color: var(--color-moss) !important;
+}
+
+.tessera-dropdown .ant-dropdown-menu-item-divider {
+  background-color: var(--color-clay-line) !important;
+  margin: var(--space-1) 0 !important;
+}
+
+/* Dropdown arrow pointer color */
+.tessera-dropdown::before {
+  border-bottom-color: var(--color-clay-line) !important;
+}
+
+/* ─── Modal (Tessera theming) ─────────────────────────────────── */
+
+[data-theme="dark"] .ant-modal .ant-modal-close-x {
+  color: var(--color-on-surface-variant);
+}
+
+/* ─── Select (Tessera theming) ─────────────────────────────────── */
+
+[data-theme="dark"] .ant-select .ant-select-placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+[data-theme="dark"] input::placeholder,
+[data-theme="dark"] select::placeholder,
+[data-theme="dark"] textarea::placeholder {
+  color: var(--color-on-surface-variant);
+}
+
+[data-theme="dark"] input + span > span,
+[data-theme="dark"] select + span > span,
+[data-theme="dark"] textarea + span > span {
+  color: var(--color-on-surface-variant) !important;
+}
+
+/* ─── Landing Page (Stitch-derived) ─────────────────────────────────────── */
+
+/* Hide shader background in dark mode — shader hardcodes light palette */
+[data-theme="dark"] .shader-bg {
+  display: none;
+}
+
+.reveal-on-scroll {
+  opacity: 0;
+  transition:
+    opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.7s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.reveal-up {
+  transform: translateY(32px);
+}
+
+.reveal-left {
+  transform: translateX(-32px);
+}
+
+.reveal-right {
+  transform: translateX(32px);
+}
+
+.reveal-fade {
+  transform: scale(0.97);
+}
+
+.reveal-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-out forwards;
+}
+
+/* ─── RTL Support ─────────────────────────────────────────────────────────── */
+
+[dir="rtl"] .admin-layout .md\:ms-64 {
+  margin-left: 0;
+  margin-right: 16rem;
+}
+
+/* Flip mobile drawer direction for RTL */
+[dir="rtl"] .admin-layout nav.-translate-x-full {
+  transform: translateX(100%);
+}
+
+[dir="rtl"] .admin-layout nav.translate-x-0 {
+  transform: translateX(0);
+}
+
+/* Ant Design RTL adjustments */
+[dir="rtl"] .ant-dropdown-menu-item-icon {
+  margin-inline-end: 0;
+  margin-inline-start: 8px;
+}
+
+[dir="rtl"] .ant-message-notice-content {
+  direction: rtl;
+}
