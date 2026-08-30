@@ -1,51 +1,65 @@
+<div align="center">
+
+<img src="public/assets/logo.png" alt="Tessera Logo" width="120" />
+
 # Tessera
 
-![CI](https://github.com/your-org/tessera/actions/workflows/ci.yml/badge.svg)
-
-> Structured content, one piece at a time.
+**Structured content, one piece at a time.**
 
 A lightweight, bilingual (EN/AR) content management system with a GraphQL API, dual-themed admin console, and a public content catalog.
 
-**What it is today:** a working mini CMS for managing projects, posts, and testimonials — create, edit, publish, and query content through a clean admin UI backed by a self-documenting GraphQL API.
+[![CI](https://github.com/your-org/tessera/actions/workflows/ci.yml/badge.svg)](https://github.com/your-org/tessera/actions)
+[![License: MIT](https://img.shields.io/badge/License-MIT-blue.svg)](./LICENSE)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](./CONTRIBUTING.md)
 
-**Where it's going:** Tessera is actively evolving toward a full-featured headless CMS with workflows, roles, content scheduling, media management, and multi-tenant support. This repo is the foundation — everything built here is designed to scale up, not throw away.
-
-**Docs:** [`DESIGN.md`](./DESIGN.md) (visual system)
+</div>
 
 ---
 
-## What's Working Now
+## What it is today
 
-- **Admin Console** — session-gated dashboard for content CRUD (projects, posts, testimonials, users)
-- **GraphQL API** — Apollo Server 5 at `/api/graphql` with introspection, rate limiting, and depth limiting
-- **Bilingual Support** — English and Arabic with RTL-aware layouts
-- **Dual Themes** — light and dark mode, persisted per user
-- **User Management** — invite-based onboarding, role-based access (Admin, Editor, Viewer)
-- **AI Draft Assist** — optional OpenRouter-powered content generation (feature-flagged)
-- **Public Catalog** — browsable content pages with locale-aware rendering
+A working mini CMS for managing projects, posts, and testimonials — create, edit, publish, and query content through a clean admin UI backed by a self-documenting GraphQL API.
+
+## Where it's going
+
+Tessera is actively evolving toward a full-featured headless CMS with workflows, roles, content scheduling, media management, and multi-tenant support. This repo is the foundation — everything built here is designed to scale up, not throw away. See the [Roadmap](#roadmap) for details.
+
+---
+
+## Features
+
+| Feature               | Description                                                                             |
+| --------------------- | --------------------------------------------------------------------------------------- |
+| **Admin Console**     | Session-gated dashboard for content CRUD (projects, posts, testimonials, users)         |
+| **GraphQL API**       | Apollo Server 5 at `/api/graphql` with introspection, rate limiting, and depth limiting |
+| **Bilingual Support** | English and Arabic with RTL-aware layouts                                               |
+| **Dual Themes**       | Light and dark mode, persisted per user                                                 |
+| **User Management**   | Invite-based onboarding, role-based access (Admin, Editor, Viewer)                      |
+| **AI Draft Assist**   | Optional OpenRouter-powered content generation (feature-flagged)                        |
+| **Public Catalog**    | Browsable content pages with locale-aware rendering                                     |
 
 ---
 
 ## Quick Start
 
 ```bash
-# 1. Clone and install
+# Clone and install
 git clone <repo-url> && cd tessera
 npm install
 
-# 2. Set up environment
+# Set up environment
 cp .env.example .env.local
 # Fill in DATABASE_URL, BETTER_AUTH_SECRET, GITHUB_CLIENT_ID/SECRET
 # OPENROUTER_API_KEY (optional, enables AI draft assist)
 
-# 3. Generate Prisma client + run migrations
+# Generate Prisma client + run migrations
 npx prisma generate
-npx prisma migrate deploy   # or: npx prisma migrate dev (local dev)
+npx prisma migrate dev
 
-# 4. Seed the admin user
+# Seed the admin user
 npx tsx prisma/seed.ts
 
-# 5. Start development
+# Start development
 npm run dev
 # → http://localhost:3000
 ```
@@ -54,16 +68,20 @@ npm run dev
 
 ## Tech Stack
 
-| Layer     | Technology                                  |
-| --------- | ------------------------------------------- |
-| Framework | Next.js 15 (App Router, React 19, RSC)      |
-| Database  | PostgreSQL (Neon) via Prisma ORM            |
-| Auth      | Better Auth (email/password + GitHub OAuth) |
-| API       | Apollo Server 5 (GraphQL, schema-first)     |
-| UI        | Ant Design 5 + Tailwind CSS 4               |
-| AI        | OpenRouter (feature-flagged draft assist)   |
-| Testing   | Vitest + Playwright + axe-core              |
-| CI/CD     | GitHub Actions                              |
+<div align="center">
+
+|     Layer     | Technology                                  |
+| :-----------: | ------------------------------------------- |
+| **Framework** | Next.js 15 (App Router, React 19, RSC)      |
+| **Database**  | PostgreSQL (Neon) via Prisma ORM            |
+|   **Auth**    | Better Auth (email/password + GitHub OAuth) |
+|    **API**    | Apollo Server 5 (GraphQL, schema-first)     |
+|    **UI**     | Ant Design 5 + Tailwind CSS 4               |
+|    **AI**     | OpenRouter (feature-flagged draft assist)   |
+|  **Testing**  | Vitest + Playwright + axe-core              |
+|   **CI/CD**   | GitHub Actions                              |
+
+</div>
 
 ---
 
@@ -88,17 +106,17 @@ npm run dev
 All defined in `.env.example` — copy to `.env.local` for local development.
 
 | Variable                  | Required | Description                                           |
-| ------------------------- | -------- | ----------------------------------------------------- |
-| `DATABASE_URL`            | Yes      | Neon Postgres pooled connection string                |
-| `BETTER_AUTH_SECRET`      | Yes      | Secret for Better Auth session signing                |
-| `BETTER_AUTH_URL`         | No       | Auth base URL (defaults to `http://localhost:3000`)   |
-| `GITHUB_CLIENT_ID`        | Yes      | GitHub OAuth app client ID                            |
-| `GITHUB_CLIENT_SECRET`    | Yes      | GitHub OAuth app client secret                        |
-| `OPENROUTER_API_KEY`      | No       | OpenRouter API key for AI draft assist                |
-| `OPENROUTER_MODEL`        | No       | Model ID (default: `openrouter/free`)                 |
-| `FEATURE_AI_DRAFT_ASSIST` | No       | Enable AI draft assist in dev (`true`/`false`)        |
-| `NEXT_PUBLIC_APP_URL`     | No       | Public site URL (defaults to `http://localhost:3000`) |
-| `SEED_ADMIN_EMAIL`        | No       | Admin email seeded by `prisma/seed.ts`                |
+| ------------------------- | :------: | ----------------------------------------------------- |
+| `DATABASE_URL`            |    ✓     | Neon Postgres pooled connection string                |
+| `BETTER_AUTH_SECRET`      |    ✓     | Secret for Better Auth session signing                |
+| `GITHUB_CLIENT_ID`        |    ✓     | GitHub OAuth app client ID                            |
+| `GITHUB_CLIENT_SECRET`    |    ✓     | GitHub OAuth app client secret                        |
+| `BETTER_AUTH_URL`         |          | Auth base URL (defaults to `http://localhost:3000`)   |
+| `OPENROUTER_API_KEY`      |          | OpenRouter API key for AI draft assist                |
+| `OPENROUTER_MODEL`        |          | Model ID (default: `openrouter/free`)                 |
+| `FEATURE_AI_DRAFT_ASSIST` |          | Enable AI draft assist in dev (`true`/`false`)        |
+| `NEXT_PUBLIC_APP_URL`     |          | Public site URL (defaults to `http://localhost:3000`) |
+| `SEED_ADMIN_EMAIL`        |          | Admin email seeded by `prisma/seed.ts`                |
 
 ---
 
@@ -116,8 +134,9 @@ app/
 components/
   ui/                — shared primitives (StatusBadge, CatalogCard)
   admin/             — admin-only (ContentForm, ContentTable)
+  landing/           — public landing page components
 lib/
-  auth/              — session helpers
+  auth/              — session helpers, RBAC
   ai-draft-assist/   — OpenRouter integration (feature-flagged)
   graphql-schema/    — typeDefs, resolvers, auth guard
   theme/             — design tokens, Ant Design theme builder
@@ -153,12 +172,12 @@ Tessera is under active development. Here's what's planned as it evolves from a 
 
 ## Testing
 
-Tests follow Constitution Article II (test-first: red then green):
+Tests follow test-first development (red → green → refactor):
 
 - **Unit/integration:** `vitest` — `npm run test`
 - **E2E:** `@playwright/test` — 4 locale×theme combinations, run against production build
-- **A11y:** `@axe-core/playwright` in `tests/e2e/a11y.spec.ts` — serious/critical violations fail the build
-- **Design-token audit:** `lib/theme/design-token-audit.test.ts` — ensures no raw hex or AntD defaults leak into components
+- **A11y:** `@axe-core/playwright` — serious/critical violations fail the build
+- **Design-token audit** — ensures no raw hex or AntD defaults leak into components
 - **Storybook:** living component gallery with theme/locale toolbar — `npm run storybook`
 
 ---
@@ -182,6 +201,10 @@ See [`CONTRIBUTING.md`](./CONTRIBUTING.md) for setup instructions, development w
 
 ---
 
+<div align="center">
+
 ## License
 
 MIT — see [`LICENSE`](./LICENSE) for details.
+
+</div>
