@@ -5,11 +5,19 @@ import { useTheme } from "@/lib/providers";
 import { useTranslation } from "react-i18next";
 import { Dropdown } from "antd";
 import { IconSun, IconMoon, IconDeviceDesktop } from "@/components/ui/icons";
+import { useSyncExternalStore } from "react";
+
+// Hydration-safe: returns false during SSR, true after hydration.
+// Uses useSyncExternalStore (React 18+) — no useEffect needed.
+const useIsMounted = () =>
+  useSyncExternalStore(() => () => {}, () => true, () => false);
 
 export function ThemeSelect() {
   const { theme, setTheme } = useTheme();
   const { t } = useTranslation();
-  const current = (theme as "light" | "dark" | "system") ?? "system";
+  // Defer reading the real theme until after hydration to avoid SSR/client mismatch.
+  const mounted = useIsMounted();
+  const current = mounted ? ((theme as "light" | "dark" | "system") ?? "system") : "system";
 
   const THEMES = [
     { value: "light", label: t("theme.light"), icon: <IconSun className="text-sm" /> },

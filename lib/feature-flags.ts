@@ -27,9 +27,12 @@ const FLAG_REGISTRY: Record<
 export async function isEnabled(key: FeatureFlagKey): Promise<boolean> {
   const config = FLAG_REGISTRY[key];
 
+  // Env var always takes precedence (allows CI/ops override without DB changes).
+  const envValue = process.env[config.envVar];
+  if (envValue !== undefined) return envValue === "true";
+
   if (process.env.NODE_ENV !== "production") {
-    const envValue = process.env[config.envVar];
-    return envValue !== undefined ? envValue === "true" : config.defaultDev;
+    return config.defaultDev;
   }
 
   // Production: DB-backed so ops can toggle without a redeploy.

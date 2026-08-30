@@ -61,6 +61,14 @@ _Admin dashboard with session-gated navigation_
 
 <div align="center">
 
+<img src="screenshots/dashboard-dark.png" alt="Admin Dashboard dark" width="800" />
+
+_Admin dashboard dark_
+
+</div>
+
+<div align="center">
+
 <img src="screenshots/04-projects-list.png" alt="Projects List" width="800" />
 
 _Projects catalog with status badges and locale support_

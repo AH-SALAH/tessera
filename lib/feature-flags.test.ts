@@ -51,18 +51,34 @@ describe("isEnabled (production path)", () => {
     vi.stubEnv("NODE_ENV", "production");
   });
 
-  it("reads the FeatureFlag table and returns its enabled value", async () => {
+  it("env var overrides DB in production", async () => {
+    process.env.FEATURE_AI_DRAFT_ASSIST = "true";
+    await expect(isEnabled("AI_DRAFT_ASSIST")).resolves.toBe(true);
+    expect(mockedFindUnique).not.toHaveBeenCalled();
+  });
+
+  it("env var false overrides DB in production", async () => {
+    process.env.FEATURE_AI_DRAFT_ASSIST = "false";
+    mockedFindUnique.mockResolvedValue({ enabled: true } as never);
+    await expect(isEnabled("AI_DRAFT_ASSIST")).resolves.toBe(false);
+    expect(mockedFindUnique).not.toHaveBeenCalled();
+  });
+
+  it("reads the FeatureFlag table when env var unset", async () => {
+    delete process.env.FEATURE_AI_DRAFT_ASSIST;
     mockedFindUnique.mockResolvedValue({ enabled: true } as never);
     await expect(isEnabled("AI_DRAFT_ASSIST")).resolves.toBe(true);
     expect(mockedFindUnique).toHaveBeenCalledWith({ where: { key: "AI_DRAFT_ASSIST" } });
   });
 
   it("returns the row's disabled state", async () => {
+    delete process.env.FEATURE_AI_DRAFT_ASSIST;
     mockedFindUnique.mockResolvedValue({ enabled: false } as never);
     await expect(isEnabled("AI_DRAFT_ASSIST")).resolves.toBe(false);
   });
 
   it("falls back to defaultProd (false per Article VII) when no row exists", async () => {
+    delete process.env.FEATURE_AI_DRAFT_ASSIST;
     mockedFindUnique.mockResolvedValue(null as never);
     await expect(isEnabled("AI_DRAFT_ASSIST")).resolves.toBe(false);
   });

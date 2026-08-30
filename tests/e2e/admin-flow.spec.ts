@@ -46,7 +46,7 @@ test.describe("Admin Flow", () => {
     await expect(page.locator("h1")).toContainText("Edit Project");
 
     // Publish button is enabled for admins.
-    const publishButton = page.locator('button:has-text("Publish")').first();
+    const publishButton = page.locator('button:has-text("Publish Changes")');
     await expect(publishButton).toBeEnabled();
     await publishButton.click();
 
