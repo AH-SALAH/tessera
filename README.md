@@ -3,6 +3,7 @@
 <img src="public/assets/logo.png" alt="Tessera Logo" width="120" />
 
 # Tessera
+🚧 under-construction
 
 **Structured content, one piece at a time.**
 
