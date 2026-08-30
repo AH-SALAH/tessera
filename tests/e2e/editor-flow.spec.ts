@@ -36,8 +36,10 @@ test.describe("Editor Flow", () => {
     await waitForHydration(page);
     await page.fill('input[name="slug"]', slug);
     await page.fill('input[name="titleEn"]', titleEn);
+    await page.fill('textarea[name="descriptionEn"]', `Description for ${titleEn}`);
     // Submit button only prevents native submission once React has hydrated.
-    const submit = page.locator('button[type="submit"]');
+    // There are two submit buttons (mobile + desktop); pick the first visible one.
+    const submit = page.locator('button[type="submit"]:visible').first();
     await expect(submit).toBeEnabled();
     await Promise.all([
       page.waitForURL(/\/en\/projects\/(?!new)[A-Za-z0-9]+$/, { timeout: 15000 }),
@@ -61,9 +63,9 @@ test.describe("Editor Flow", () => {
     const uniqueSlug = `editor-no-publish-${Date.now()}`;
     await createDraft(page, uniqueSlug, "No Publish Test");
 
-    const publishWrapper = page.locator("span:has(> button:has-text('Publish'))");
-    await expect(publishWrapper.locator("button")).toBeDisabled();
-    await publishWrapper.hover();
+    const publishButton = page.locator('button:has-text("Publish")').first();
+    await expect(publishButton).toBeDisabled();
+    await publishButton.hover();
     await expect(page.locator('[role="tooltip"]')).toContainText("Only an Admin can publish");
   });
 
@@ -118,7 +120,7 @@ test.describe("Editor Flow", () => {
     const card = page.locator("article", { hasText: uniqueTitle });
     await expect(card).toBeVisible({ timeout: 10000 });
     // Scope to this card's own Delete — other rows belong to other authors.
-    await card.locator('button:has-text("Delete")').click();
+    await card.locator('button[aria-label*="Delete"]').first().click();
     await expect(card).not.toBeVisible({ timeout: 5000 });
   });
 });

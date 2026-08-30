@@ -1,7 +1,5 @@
 import { test, expect, signInAs, waitForHydration } from "./helpers/auth";
 
-const ADMIN = { email: "admin@example.com", password: "testpassword123" };
-
 test.describe("Admin Flow", () => {
   let adminToken = "";
   let editorToken = "";
@@ -48,7 +46,7 @@ test.describe("Admin Flow", () => {
     await expect(page.locator("h1")).toContainText("Edit Project");
 
     // Publish button is enabled for admins.
-    const publishButton = page.locator("span:has(> button:has-text('Publish')) > button");
+    const publishButton = page.locator('button:has-text("Publish")').first();
     await expect(publishButton).toBeEnabled();
     await publishButton.click();
 
@@ -94,7 +92,7 @@ test.describe("Admin Flow", () => {
       .click();
 
     await dialog.locator("button.ant-btn-primary").click();
-    await expect(page.locator("text=User invited")).toBeVisible({ timeout: 10000 });
+    await expect(page.locator("text=Invitation sent")).toBeVisible({ timeout: 10000 });
 
     // Verify via GraphQL users query
     const usersResponse = await request.post("/api/graphql", {
@@ -139,7 +137,7 @@ test.describe("Admin Flow", () => {
     await waitForHydration(page);
     const card = page.locator("article", { hasText: uniqueTitle });
     await expect(card).toBeVisible({ timeout: 10000 });
-    await card.locator('button:has-text("Delete")').click();
+    await card.locator('button[aria-label*="Delete"]').first().click();
     await expect(card).not.toBeVisible({ timeout: 5000 });
 
     // Published projects are public — verify it is gone from the public query.
