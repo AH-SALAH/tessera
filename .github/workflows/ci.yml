@@ -87,7 +87,9 @@ jobs:
       - run: npm run start &
         env:
           PORT: 3000
+          SEED_ADMIN_EMAIL: ${{ secrets.SEED_ADMIN_EMAIL }}
           BETTER_AUTH_SECRET: ${{ secrets.BETTER_AUTH_SECRET }}
+          BETTER_AUTH_URL: http://localhost:3000
       - run: sleep 10
       - run: npm run test:e2e
 
