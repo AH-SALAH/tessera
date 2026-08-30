@@ -10,7 +10,7 @@ A lightweight, bilingual (EN/AR) content management system with a GraphQL API, d
 
 **Where it's going:** Tessera is actively evolving toward a full-featured headless CMS with workflows, roles, content scheduling, media management, and multi-tenant support. This repo is the foundation — everything built here is designed to scale up, not throw away.
 
-**Docs:** [`DESIGN.md`](./DESIGN.md) (visual system) · [`.specify/`](./.specify/) (spec, plan, tasks, constitution)
+**Docs:** [`DESIGN.md`](./DESIGN.md) (visual system)
 
 ---
 
