@@ -74,13 +74,6 @@ _User management with invite-based onboarding_
 
 </div>
 
-<div align="center">
-
-<img src="screenshots/07-landing-dark.png" alt="Landing Dark Mode" width="800" />
-
-_Dark mode_
-
-</div>
 
 ---
 
