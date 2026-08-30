@@ -100,27 +100,17 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
-      - run: npx prisma generate
-      - run: npm run build
-      - run: npm run start &
-        env:
-          PORT: 3000
-      - run: sleep 10
-      - name: Export schema via introspection
+      - name: Export schema from typeDefs
         run: node scripts/export-schema.mjs
       - name: Diff against committed schema
         run: |
-          if [ ! -f schema-introspection.json ]; then
-            echo "No committed schema baseline found. Saving current schema as baseline."
-            cp schema-introspection.json schema-introspection.baseline.json
+          if ! git show HEAD:schema-introspection.json > schema-introspection.baseline.json 2>/dev/null; then
+            echo "No committed schema baseline found. Skipping diff."
             exit 0
           fi
-          cp schema-introspection.json schema-introspection.current.json
-          cp schema-introspection.json schema-introspection.baseline.json
-          if ! diff -u schema-introspection.baseline.json schema-introspection.current.json; then
+          if ! diff -u schema-introspection.baseline.json schema-introspection.json; then
             echo ""
             echo "Schema has changed! Update the baseline with:"
-            echo "  cp schema-introspection.current.json schema-introspection.json"
             echo "  git add schema-introspection.json"
             exit 1
           fi

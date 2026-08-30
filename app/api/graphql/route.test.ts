@@ -1,4 +1,28 @@
 /// <reference types="vitest/globals" />
+
+vi.mock("@/lib/prisma", () => ({
+  prisma: {
+    project: {
+      findMany: vi.fn().mockResolvedValue([]),
+      findUnique: vi.fn().mockResolvedValue(null),
+    },
+  },
+}));
+
+vi.mock("@/lib/auth/session", () => ({
+  getServerSession: vi.fn().mockResolvedValue(null),
+}));
+
+vi.mock("@/lib/auth/email", () => ({
+  sendResetPasswordEmail: vi.fn(),
+  sendVerificationEmail: vi.fn(),
+  sendInviteEmail: vi.fn(),
+}));
+
+vi.mock("@/lib/site-url", () => ({
+  getSiteUrl: vi.fn().mockReturnValue("http://localhost:3000"),
+}));
+
 import { NextRequest } from "next/server";
 import { GET, POST } from "./route";
 
