@@ -39,6 +39,7 @@ test.describe("Public API", () => {
 
     expect(response.ok()).toBeTruthy();
     const body = await response.json();
+    expect(body.errors, JSON.stringify(body.errors)).toBeUndefined();
     expect(body.data.projects).toBeDefined();
     // Public endpoint returns only PUBLISHED (status arg ignored for unauthenticated callers)
     body.data.projects.forEach((p: any) => {

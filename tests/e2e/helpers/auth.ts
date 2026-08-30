@@ -36,11 +36,11 @@ export async function getSessionToken(
 
 export function seedUser(kind: "admin" | "editor1" | "editor2") {
   const map = {
-    admin: "admin@example.com",
+    admin: "admin@tessera.local",
     editor1: "editor@test.com",
     editor2: "editor2@test.com",
   } as const;
-  return { email: map[kind], password: "testpassword123" };
+  return { email: map[kind], password: process.env.SEED_PASSWORD ?? "admin123" };
 }
 
 export async function signInAs(request: any, kind: "admin" | "editor1" | "editor2") {

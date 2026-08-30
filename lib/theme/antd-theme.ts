@@ -23,7 +23,7 @@ function cssVar(
 export function buildAntdThemeConfig(mode: "light" | "dark"): ThemeConfig {
   return {
     token: {
-      colorPrimary: cssVar("--color-moss", "#3B5D50", "#5C8B79", mode),
+      colorPrimary: cssVar("--color-moss", "#3B5D50", "#4E7D6E", mode),
       colorWarning: cssVar("--color-ochre", "#C98A3C", "#D9A05B", mode),
       colorBgBase: cssVar("--color-chalk", "#F1F0EC", "#1B1F23", mode),
       colorBgContainer: cssVar("--color-surface", "#FFFFFF", "#24292E", mode),

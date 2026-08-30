@@ -49,6 +49,9 @@ test.describe("a11y — Public pages", () => {
     ).toHaveLength(0);
   });
 
+  // Apollo landing page is disabled in production (NODE_ENV=production in CI),
+  // so /api/graphql returns a bare response without <title> or lang — not a real page.
+  test.skip(process.env.NODE_ENV === "production", "Apollo landing page disabled in production");
   test("public GraphQL schema page has no serious/critical violations", async ({ page }) => {
     await page.goto("/api/graphql");
     await page.waitForLoadState("networkidle");

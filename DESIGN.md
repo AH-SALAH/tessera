@@ -53,7 +53,7 @@ PulseFeed's cold, live-data, oscilloscope register.
 | `--color-surface`   | `#24292E`  | Cards, panels                                                             |
 | `--color-graphite`  | `#F1F0EC`  | Primary text                                                              |
 | `--color-muted`     | `#9A9E A2` | Secondary text                                                            |
-| `--color-moss`      | `#5C8B79`  | Primary accent, lightened for dark-background contrast                    |
+| `--color-moss`      | `#4E7D6E`  | Primary accent, darkened for WCAG AA contrast with white text            |
 | `--color-ochre`     | `#D9A05B`  | Secondary accent, lightened for dark-background contrast                  |
 | `--color-clay-line` | `#33383D`  | Hairline borders                                                          |
 

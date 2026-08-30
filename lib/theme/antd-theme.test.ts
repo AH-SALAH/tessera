@@ -54,7 +54,7 @@ describe("buildAntdThemeConfig", () => {
         documentElement: {
           getPropertyValue: (name: string) => {
             const vars: Record<string, string> = {
-              "--color-moss": "#5C8B79",
+              "--color-moss": "#4E7D6E",
               "--color-ochre": "#D9A05B",
               "--color-chalk": "#1B1F23",
               "--color-surface": "#24292E",
@@ -72,7 +72,7 @@ describe("buildAntdThemeConfig", () => {
     const config = buildAntdThemeConfig("dark");
     const token = config.token!;
 
-    expect(token.colorPrimary).toBe("#5C8B79");
+    expect(token.colorPrimary).toBe("#4E7D6E");
     expect(token.colorWarning).toBe("#D9A05B");
     expect(token.colorBgBase).toBe("#1B1F23");
     expect(token.colorBgContainer).toBe("#24292E");
@@ -98,7 +98,7 @@ describe("buildAntdThemeConfig", () => {
     const config = buildAntdThemeConfig("dark");
     const token = config.token!;
 
-    expect(token.colorPrimary).toBe("#5C8B79");
+    expect(token.colorPrimary).toBe("#4E7D6E");
     expect(token.colorBgBase).toBe("#1B1F23");
     expect(token.colorText).toBe("#F1F0EC");
   });
