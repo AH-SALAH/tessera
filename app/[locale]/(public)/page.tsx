@@ -4,7 +4,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { use, useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { ShaderBackground } from "@/components/landing/ShaderBackground";
 import { ScrollReveal } from "@/components/landing/ScrollReveal";
@@ -12,23 +12,35 @@ import { LandingNav } from "@/components/landing/LandingNav";
 import { LandingFooter } from "@/components/landing/LandingFooter";
 import Image from "next/image";
 import Link from "next/link";
-import type { Project } from "@prisma/client";
+
+interface LandingProject {
+  id: string;
+  slug: string;
+  status: string;
+  title: { value: string } | null;
+  stack: string[];
+}
 
 const FEATURE_IDS = ["F-01", "F-02", "F-03"] as const;
 
-export default function PublicHomePage() {
+export default function PublicHomePage({ params }: { params: Promise<{ locale: string }> }) {
   const { t } = useTranslation();
-  const [projects, setProjects] = useState<Project[]>([]);
+  const [projects, setProjects] = useState<LandingProject[]>([]);
+  const { locale } = use(params);
 
   useEffect(() => {
-    fetch("/api/projects/public")
+    fetch("/api/graphql", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        query: `query ($locale: Locale) { projects { id slug status title(locale: $locale) { value } stack } }`,
+        variables: { locale: locale.toUpperCase() === "AR" ? "AR" : "EN" },
+      }),
+    })
       .then((res) => res.json())
-      .then((data) => setProjects(data))
+      .then((data) => setProjects(data?.data?.projects ?? []))
       .catch(() => {});
-  }, []);
-
-  const locale =
-    typeof window !== "undefined" ? window.location.pathname.split("/")[1] || "en" : "en";
+  }, [locale]);
 
   const FEATURES = [
     {
@@ -158,7 +170,7 @@ export default function PublicHomePage() {
               </h2>
             </ScrollReveal>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project: Project, i: number) => (
+              {projects.map((project, i) => (
                 <ScrollReveal key={project.id} delay={i * 80} variant="up">
                   <article className="rounded-base border border-clay-line bg-surface p-6 transition-all duration-200 hover:border-moss hover:-translate-y-0.5">
                     <div className="mb-3 flex items-start justify-between gap-3">
@@ -176,9 +188,7 @@ export default function PublicHomePage() {
                       </span>
                     </div>
                     <h3 className="font-display text-lg font-semibold text-graphite">
-                      {locale.toUpperCase() === "AR"
-                        ? (project.titleAr ?? project.titleEn ?? "")
-                        : (project.titleEn ?? "")}
+                      {project.title?.value ?? ""}
                     </h3>
                     <p className="mt-1 font-mono text-xs text-muted">{project.stack.join(" · ")}</p>
                   </article>
