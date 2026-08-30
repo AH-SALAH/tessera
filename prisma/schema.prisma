@@ -1,0 +1,169 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id            String    @id @default(cuid())
+  email         String    @unique
+  name          String?
+  role          Role      @default(EDITOR)
+  locale        String    @default("en")
+  theme         String    @default("system")
+  createdAt     DateTime  @default(now())
+  posts         Post[]
+  projects      Project[]
+  emailVerified Boolean   @default(false)
+  image         String?
+  updatedAt     DateTime  @updatedAt
+  sessions      Session[]
+  accounts      Account[]
+
+  @@map("user")
+}
+
+model Project {
+  id            String        @id @default(cuid())
+  slug          String        @unique
+  titleEn       String?
+  titleAr       String?
+  descriptionEn String?
+  descriptionAr String?
+  stack         String[]
+  liveUrl       String?
+  status        ContentStatus @default(DRAFT)
+  authorId      String
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  author        User          @relation(fields: [authorId], references: [id])
+  tags          Tag[]         @relation("ProjectToTag")
+
+  @@index([authorId])
+  @@index([status])
+}
+
+model Post {
+  id        String        @id @default(cuid())
+  slug      String        @unique
+  titleEn   String?
+  titleAr   String?
+  bodyEn    String?
+  bodyAr    String?
+  status    ContentStatus @default(DRAFT)
+  authorId  String
+  createdAt DateTime      @default(now())
+  updatedAt DateTime      @updatedAt
+  author    User          @relation(fields: [authorId], references: [id])
+
+  @@index([authorId])
+  @@index([status])
+}
+
+model Testimonial {
+  id         String        @id @default(cuid())
+  authorName String
+  roleTitle  String
+  quoteEn    String?
+  quoteAr    String?
+  status     ContentStatus @default(DRAFT)
+  createdAt  DateTime      @default(now())
+
+  @@index([status])
+}
+
+model Tag {
+  id       String    @id @default(cuid())
+  name     String    @unique
+  projects Project[] @relation("ProjectToTag")
+}
+
+model ContentAudit {
+  id         String   @id @default(cuid())
+  entityType String
+  entityId   String
+  action     String
+  actorId    String
+  createdAt  DateTime @default(now())
+
+  @@index([entityType, entityId])
+}
+
+model FeatureFlag {
+  key     String  @id
+  enabled Boolean @default(false)
+}
+
+enum Role {
+  ADMIN
+  EDITOR
+}
+
+enum ContentStatus {
+  DRAFT
+  PUBLISHED
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@index([userId])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  issuer                String?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId])
+  @@map("account")
+}
+
+model Verification {
+  id         String   @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@index([identifier])
+  @@map("verification")
+}
+
+model Invitation {
+  id         String   @id @default(cuid())
+  email      String   @unique
+  token      String   @unique
+  role       Role     @default(EDITOR)
+  expiresAt  DateTime
+  acceptedAt DateTime?
+  createdAt  DateTime @default(now())
+
+  @@map("invitation")
+}
