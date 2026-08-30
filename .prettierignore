@@ -1,0 +1,15 @@
+node_modules
+.next
+dist
+build
+coverage
+package-lock.json
+package-lock.json
+pnpm-lock.yaml
+yarn.lock
+prisma/migrations
+*.min.js
+*.min.css
+public
+schema-introspection.json
+tsconfig.tsbuildinfo
