@@ -6,14 +6,16 @@
 import nodemailer from "nodemailer";
 import { getSiteUrl } from "@/lib/site-url";
 
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || "localhost",
-  port: Number(process.env.SMTP_PORT) || 587,
-  secure: process.env.SMTP_SECURE === "true",
-  auth: process.env.SMTP_USER
-    ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
-    : undefined,
-});
+const transporter = process.env.SMTP_HOST
+  ? nodemailer.createTransport({
+      host: process.env.SMTP_HOST,
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === "true",
+      auth: process.env.SMTP_USER
+        ? { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS }
+        : undefined,
+    })
+  : null;
 
 const FROM = process.env.SMTP_FROM || "Tessera <noreply@tessera.local>";
 const APP_URL = getSiteUrl();
@@ -27,6 +29,7 @@ export async function sendResetPasswordEmail({
   url: string;
   token: string;
 }) {
+  if (!transporter) return; // No SMTP configured — skip silently (CI / local dev)
   const name = user.name || "there";
   const resetUrl = `${APP_URL}/reset-password?token=${token}`;
 
@@ -71,6 +74,7 @@ export async function sendInviteEmail({
   name?: string | null;
   token: string;
 }) {
+  if (!transporter) return; // No SMTP configured — skip silently (CI / local dev)
   const inviteName = name || "there";
   const inviteUrl = `${APP_URL}/accept-invite?token=${token}`;
 
@@ -115,6 +119,7 @@ export async function sendVerificationEmail({
   url: string;
   token: string;
 }) {
+  if (!transporter) return; // No SMTP configured — skip silently (CI / local dev)
   const name = user.name || "there";
   const verifyUrl = `${APP_URL}/verify-email?token=${token}`;
 
