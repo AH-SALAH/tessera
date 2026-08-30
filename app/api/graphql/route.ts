@@ -27,8 +27,9 @@ import { createApolloNextHandler } from "@/lib/graphql-schema/apollo-next-adapte
 import { NextRequest } from "next/server";
 
 // FR-003: per-IP token-bucket rate limiter (single-instance, in-memory).
+// RATE_LIMIT_MAX_REQUESTS can be overridden via env var (e.g. 200 for e2e tests).
 const RATE_LIMIT_WINDOW_MS = 60_000;
-const RATE_LIMIT_MAX_REQUESTS = 20;
+const RATE_LIMIT_MAX_REQUESTS = Number(process.env.RATE_LIMIT_MAX_REQUESTS) || 20;
 
 interface RateLimitBucket {
   tokens: number;

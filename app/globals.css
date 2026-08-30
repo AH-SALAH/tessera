@@ -8,6 +8,7 @@
   --color-muted: #686c70;
   --color-moss: #3b5d50;
   --color-ochre: #8e6530;
+  --color-ochre-bg: #fff5e6;
   --color-clay-line: #d8d5cc;
 
   /* Stitch Design Tokens */
@@ -72,6 +73,7 @@
   --color-muted: #9a9ea2;
   --color-moss: #4e7d6e;
   --color-ochre: #d9a05b;
+  --color-ochre-bg: #3d2e14;
   --color-clay-line: #33383d;
 
   --color-primary: #4e7d6e;

@@ -11,6 +11,7 @@ $graphite-light: #22262b;
 $muted-light: #686c70;
 $moss-light: #3b5d50;
 $ochre-light: #8e6530;
+$ochre-bg-light: #fff5e6;
 $clay-line-light: #d8d5cc;
 
 // ---- Dark theme ----
@@ -20,6 +21,7 @@ $graphite-dark: #f1f0ec;
 $muted-dark: #9a9ea2;
 $moss-dark: #4e7d6e;
 $ochre-dark: #d9a05b;
+$ochre-bg-dark: #3d2e14;
 $clay-line-dark: #33383d;
 
 // ---- Typography ----
@@ -37,6 +39,7 @@ $radius-base: 4px;
   --color-muted: #{$muted-light};
   --color-moss: #{$moss-light};
   --color-ochre: #{$ochre-light};
+  --color-ochre-bg: #{$ochre-bg-light};
   --color-clay-line: #{$clay-line-light};
 
   --font-display: #{$font-display};
@@ -53,5 +56,6 @@ $radius-base: 4px;
   --color-muted: #{$muted-dark};
   --color-moss: #{$moss-dark};
   --color-ochre: #{$ochre-dark};
+  --color-ochre-bg: #{$ochre-bg-dark};
   --color-clay-line: #{$clay-line-dark};
 }

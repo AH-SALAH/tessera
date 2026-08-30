@@ -39,6 +39,10 @@ export function buildAntdThemeConfig(mode: "light" | "dark"): ThemeConfig {
       ),
     },
     components: {
+      Tag: {
+        colorWarning: cssVar("--color-ochre", "#8E6530", "#D9A05B", mode),
+        colorWarningBg: cssVar("--color-ochre-bg", "#FFF5E6", "#3D2E14", mode),
+      },
       Typography: {
         fontFamily: cssVar(
           "--font-body",

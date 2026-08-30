@@ -20,6 +20,7 @@ describe("buildAntdThemeConfig", () => {
             const vars: Record<string, string> = {
               "--color-moss": "#3B5D50",
               "--color-ochre": "#8E6530",
+              "--color-ochre-bg": "#FFF5E6",
               "--color-chalk": "#F1F0EC",
               "--color-surface": "#FFFFFF",
               "--color-graphite": "#22262B",
@@ -46,6 +47,8 @@ describe("buildAntdThemeConfig", () => {
     expect(token.borderRadius).toBe(4);
     expect(token.fontFamily).toBe("Public Sans, system-ui, sans-serif");
     expect(config.components?.Typography?.fontFamily).toBe("Public Sans, system-ui, sans-serif");
+    expect(config.components?.Tag?.colorWarning).toBe("#8E6530");
+    expect(config.components?.Tag?.colorWarningBg).toBe("#FFF5E6");
   });
 
   it("returns ThemeConfig with dark mode tokens from CSS vars", () => {
@@ -56,6 +59,7 @@ describe("buildAntdThemeConfig", () => {
             const vars: Record<string, string> = {
               "--color-moss": "#4E7D6E",
               "--color-ochre": "#D9A05B",
+              "--color-ochre-bg": "#3D2E14",
               "--color-chalk": "#1B1F23",
               "--color-surface": "#24292E",
               "--color-graphite": "#F1F0EC",
@@ -79,6 +83,8 @@ describe("buildAntdThemeConfig", () => {
     expect(token.colorText).toBe("#F1F0EC");
     expect(token.colorTextSecondary).toBe("#9A9EA2");
     expect(token.colorBorder).toBe("#33383D");
+    expect(config.components?.Tag?.colorWarning).toBe("#D9A05B");
+    expect(config.components?.Tag?.colorWarningBg).toBe("#3D2E14");
   });
 
   it("falls back to hardcoded light values when CSS vars missing (SSR)", () => {

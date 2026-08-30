@@ -77,6 +77,14 @@ async function main() {
     }
   }
 
+  // Seed feature flags so isEnabled() returns expected values in production mode.
+  await prisma.featureFlag.upsert({
+    where: { key: "AI_DRAFT_ASSIST" },
+    update: {},
+    create: { key: "AI_DRAFT_ASSIST", enabled: true },
+  });
+  console.log("✓ Feature flag AI_DRAFT_ASSIST = enabled");
+
   console.log("\n── Login credentials ──");
   console.log(`Admin:    admin@tessera.local / ${SEED_PASSWORD}`);
   console.log(`Editor 1: editor@test.com / ${SEED_PASSWORD}`);
