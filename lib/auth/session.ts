@@ -14,15 +14,19 @@ export interface ServerSession {
 export async function getServerSession(
   request: Request | NextRequest,
 ): Promise<ServerSession | null> {
-  const session = await auth.api.getSession({ headers: request.headers });
-  if (!session?.user) return null;
+  try {
+    const session = await auth.api.getSession({ headers: request.headers });
+    if (!session?.user) return null;
 
-  return {
-    user: {
-      id: session.user.id,
-      email: session.user.email,
-      role: (session.user as unknown as { role: Role }).role,
-      theme: (session.user as unknown as { theme: string }).theme ?? "system",
-    },
-  };
+    return {
+      user: {
+        id: session.user.id,
+        email: session.user.email,
+        role: (session.user as unknown as { role: Role }).role,
+        theme: (session.user as unknown as { theme: string }).theme ?? "system",
+      },
+    };
+  } catch {
+    return null;
+  }
 }
