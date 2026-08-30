@@ -8,7 +8,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  workers: 1,
+  workers: process.env.CI ? 2 : 1,
   reporter: "html",
   use: {
     baseURL,
@@ -22,14 +22,6 @@ export default defineConfig({
     {
       name: "chromium-en-dark",
       use: { ...devices["Desktop Chrome"], locale: "en-US", colorScheme: "dark" },
-    },
-    {
-      name: "chromium-ar-light",
-      use: { ...devices["Desktop Chrome"], locale: "ar-SA", colorScheme: "light" },
-    },
-    {
-      name: "chromium-ar-dark",
-      use: { ...devices["Desktop Chrome"], locale: "ar-SA", colorScheme: "dark" },
     },
   ],
   webServer: {

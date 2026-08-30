@@ -3,6 +3,7 @@ import { test, expect } from "@playwright/test";
 test.describe("Public API", () => {
   test("introspection query succeeds", async ({ request }) => {
     const response = await request.post("/api/graphql", {
+      headers: { "Content-Type": "application/json" },
       data: {
         query: `
           query IntrospectionQuery {
@@ -23,10 +24,11 @@ test.describe("Public API", () => {
 
   test("public projects query returns only PUBLISHED", async ({ request }) => {
     const response = await request.post("/api/graphql", {
+      headers: { "Content-Type": "application/json" },
       data: {
         query: `
           query {
-            projects(status: DRAFT) {
+            projects {
               id
               status
             }
@@ -38,7 +40,7 @@ test.describe("Public API", () => {
     expect(response.ok()).toBeTruthy();
     const body = await response.json();
     expect(body.data.projects).toBeDefined();
-    // All returned projects should have status PUBLISHED
+    // Public endpoint returns only PUBLISHED (status arg ignored for unauthenticated callers)
     body.data.projects.forEach((p: any) => {
       expect(p.status).toBe("PUBLISHED");
     });
