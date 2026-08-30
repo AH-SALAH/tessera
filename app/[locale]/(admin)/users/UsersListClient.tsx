@@ -313,20 +313,19 @@ export function UsersListClient({ initialUsers, locale }: UsersListClientProps) 
     modal.confirm({
       title: t("content.delete"),
       content: (
-        <div>
+        <div className="px-6 py-4">
           <p style={{ marginBottom: 8 }}>
             {t("users.deleteConfirm")} <strong>{user.email}</strong>?
           </p>
-          <p style={{ color: "#6B6F73", fontSize: 13 }}>{t("users.deleteWarning")}</p>
+          <p className="text-muted text-xs">{t("users.deleteWarning")}</p>
         </div>
       ),
       okText: t("content.delete"),
       okType: "danger",
       cancelText: t("common.cancel"),
       styles: {
-        header: { borderBottom: "1px solid #D8D5CC", paddingBottom: 12 },
-        body: { padding: "16px 24px" },
-        footer: { borderTop: "1px solid #D8D5CC", paddingTop: 12 },
+        header: { borderBottom: "1px solid var(--color-clay-line)", paddingBottom: 12 },
+        footer: { borderTop: "1px solid var(--color-clay-line)", paddingTop: 12 },
       },
       onOk: async () => {
         try {
@@ -395,8 +394,8 @@ export function UsersListClient({ initialUsers, locale }: UsersListClientProps) 
           inviteForm.resetFields();
         }}
         styles={{
-          header: { borderBottom: "1px solid #D8D5CC", paddingBottom: 12 },
-          footer: { borderTop: "1px solid #D8D5CC", paddingTop: 12 },
+          header: { borderBottom: "1px solid var(--color-clay-line)", paddingBottom: 12 },
+          footer: { borderTop: "1px solid var(--color-clay-line)", paddingTop: 12 },
         }}
       >
         <Form form={inviteForm} layout="vertical">
@@ -423,7 +422,7 @@ export function UsersListClient({ initialUsers, locale }: UsersListClientProps) 
             </Select>
           </Form.Item>
         </Form>
-        <p style={{ color: "#6B6F73", fontSize: 13, marginTop: -8 }}>{t("users.inviteHint")}</p>
+        <p className="text-muted text-xs" style={{ marginTop: -8 }}>{t("users.inviteHint")}</p>
       </Modal>
 
       {/* Edit Role Modal */}
@@ -443,14 +442,14 @@ export function UsersListClient({ initialUsers, locale }: UsersListClientProps) 
           editForm.resetFields();
         }}
         styles={{
-          header: { borderBottom: "1px solid #D8D5CC", paddingBottom: 12 },
-          footer: { borderTop: "1px solid #D8D5CC", paddingTop: 12 },
+          header: { borderBottom: "1px solid var(--color-clay-line)", paddingBottom: 12 },
+          footer: { borderTop: "1px solid var(--color-clay-line)", paddingTop: 12 },
         }}
       >
         {editingUser && (
-          <div style={{ marginBottom: 16, padding: "12px", borderRadius: 4 }}>
+          <div className="mb-4 rounded-base p-3">
             <div
-              style={{ fontFamily: "IBM Plex Mono", fontSize: 12, color: "var(--color-graphit)" }}
+              className="font-mono text-xs text-graphite"
             >
               {editingUser.email}
             </div>

@@ -69,15 +69,7 @@ export default function SignInPage() {
             <Form.Item
               name="email"
               label={
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "var(--color-muted)",
-                  }}
-                >
+                <span className="font-mono text-xs uppercase tracking-wide text-muted">
                   {t("signin.emailLabel")}
                 </span>
               }
@@ -92,15 +84,7 @@ export default function SignInPage() {
             <Form.Item
               name="password"
               label={
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "var(--color-muted)",
-                  }}
-                >
+                <span className="font-mono text-xs uppercase tracking-wide text-muted">
                   {t("signin.passwordLabel")}
                 </span>
               }
@@ -121,12 +105,7 @@ export default function SignInPage() {
           </Form>
 
           <p
-            style={{
-              textAlign: "center",
-              marginTop: 16,
-              fontSize: 14,
-              color: "var(--color-muted)",
-            }}
+            className="text-center mt-4 text-sm text-muted"
           >
             {t("signin.noRegistration")}
           </p>

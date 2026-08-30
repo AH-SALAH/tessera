@@ -123,15 +123,7 @@ export function AcceptInviteClient({ token }: AcceptInviteClientProps) {
             <Form.Item
               name="name"
               label={
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "var(--color-muted)",
-                  }}
-                >
+                <span className="font-mono text-xs uppercase tracking-wide text-muted">
                   {t("acceptInvite.nameLabel")}
                 </span>
               }
@@ -143,15 +135,7 @@ export function AcceptInviteClient({ token }: AcceptInviteClientProps) {
             <Form.Item
               name="password"
               label={
-                <span
-                  style={{
-                    fontFamily: "var(--font-mono)",
-                    fontSize: 12,
-                    textTransform: "uppercase",
-                    letterSpacing: "0.5px",
-                    color: "var(--color-muted)",
-                  }}
-                >
+                <span className="font-mono text-xs uppercase tracking-wide text-muted">
                   {t("acceptInvite.passwordLabel")}
                 </span>
               }

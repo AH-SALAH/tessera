@@ -58,20 +58,19 @@ export function ProjectsListClient({ initialProjects, userRole, locale }: Projec
     Modal.confirm({
       title: t("projects.deleteConfirm"),
       content: (
-        <div>
+        <div className="px-6 py-4">
           <p style={{ marginBottom: 8 }}>
             {t("projects.deleteMessage")} <strong>{title}</strong>?
           </p>
-          <p style={{ color: "#6B6F73", fontSize: 13 }}>{t("projects.deleteWarning")}</p>
+          <p className="text-muted text-xs">{t("projects.deleteWarning")}</p>
         </div>
       ),
       okText: t("content.delete"),
       okType: "danger",
       cancelText: t("common.cancel"),
       styles: {
-        header: { borderBottom: "1px solid #D8D5CC", paddingBottom: 12 },
-        body: { padding: "16px 24px" },
-        footer: { borderTop: "1px solid #D8D5CC", paddingTop: 12 },
+        header: { borderBottom: "1px solid var(--color-clay-line)", paddingBottom: 12 },
+        footer: { borderTop: "1px solid var(--color-clay-line)", paddingTop: 12 },
       },
       onOk: async () => {
         try {

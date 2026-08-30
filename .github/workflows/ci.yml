@@ -68,6 +68,7 @@ jobs:
           node-version: "22"
           cache: "npm"
       - run: npm ci
+      - run: npx prisma generate
       - run: npx vitest run lib/theme/design-token-audit.test.ts
 
   e2e-tests:

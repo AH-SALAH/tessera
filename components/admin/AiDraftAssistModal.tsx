@@ -75,7 +75,7 @@ export function AiDraftAssistModal({
       width={960}
       className="!p-0"
       footer={null}
-      styles={{ body: { padding: 0 } }}
+      classNames={{ body: "p-0" }}
     >
       <div className="flex flex-col sm:flex-row max-h-[870px] overflow-hidden">
         {/* Left sidebar — Input */}

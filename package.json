@@ -2,6 +2,7 @@
   "name": "tessera",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "description": "Tessera — GraphQL content & case-study platform. Structured content, one piece at a time.",
   "scripts": {
     "dev": "NODE_OPTIONS='--no-deprecation' next dev",
