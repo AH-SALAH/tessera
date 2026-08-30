@@ -8,7 +8,12 @@ import { prismaAdapter } from "better-auth/adapters/prisma";
 import { prisma } from "@/lib/prisma";
 import { sendResetPasswordEmail, sendVerificationEmail } from "./email";
 
+if (!process.env.BETTER_AUTH_SECRET) {
+  console.error("[auth] ⚠ BETTER_AUTH_SECRET is not set — Better Auth will reject sign-in requests.");
+}
+
 export const auth = betterAuth({
+  secret: process.env.BETTER_AUTH_SECRET ?? "",
   database: prismaAdapter(prisma, { provider: "postgresql" }),
   emailAndPassword: {
     enabled: true,
