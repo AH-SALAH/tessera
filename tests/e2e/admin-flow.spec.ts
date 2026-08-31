@@ -137,11 +137,12 @@ test.describe("Admin Flow", () => {
     const card = page.locator("article", { hasText: uniqueTitle });
     await expect(card).toBeVisible({ timeout: 10000 });
     await card.locator('button[aria-label*="Delete"]').first().click();
-    // ProjectsListClient uses antd modal.confirm for delete
-    const confirmModal = page.locator(".ant-modal-confirm");
-    await expect(confirmModal).toBeVisible({ timeout: 5000 });
-    await confirmModal.locator("button.ant-btn-dangerous, button.ant-btn-primary").last().click();
-    await expect(card).not.toBeVisible({ timeout: 5000 });
+    // ProjectsListClient uses antd modal.confirm for delete — find the OK button
+    // in any visible antd modal (class varies across antd versions)
+    const confirmButton = page.locator('.ant-modal').locator('button').filter({ hasText: /Delete|OK|Yes|Confirm/i }).last();
+    await expect(confirmButton).toBeVisible({ timeout: 10000 });
+    await confirmButton.click();
+    await expect(card).not.toBeVisible({ timeout: 10000 });
 
     // Published projects are public — verify it is gone from the public query.
     const verifyResponse = await request.post("/api/graphql", {

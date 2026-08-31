@@ -419,8 +419,7 @@ export function AiDraftAssistModal({
                   >
                     {t("content.descriptionEn")}
                   </label>
-                  {description}
-                  {/* <TextArea
+                  <TextArea
                     id="ai-description"
                     name="ai-description"
                     rows={4}
@@ -428,7 +427,7 @@ export function AiDraftAssistModal({
                     onChange={(e) => setUserDescription(e.target.value)}
                     className="!border-[var(--color-clay-line)] !rounded"
                     style={{ fontFamily: "var(--font-body)" }}
-                  /> */}
+                  />
                 </div>
                 {seoSummary && (
                   <div>
@@ -438,8 +437,7 @@ export function AiDraftAssistModal({
                     >
                       {t("aiDraftAssist.modal.seoSummary")}
                     </label>
-                    {seoSummary}
-                    {/* <TextArea
+                    <TextArea
                       id="ai-seo"
                       name="ai-seo"
                       rows={2}
@@ -447,7 +445,7 @@ export function AiDraftAssistModal({
                       onChange={(e) => setUserSeoSummary(e.target.value)}
                       className="!border-[var(--color-clay-line)] !rounded"
                       style={{ fontFamily: "var(--font-body)" }}
-                    /> */}
+                    />
                   </div>
                 )}
               </div>

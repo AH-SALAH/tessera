@@ -409,7 +409,7 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
 
             {/* Action Buttons (mobile) */}
             <div className="flex gap-4 pt-6 border-t border-clay-line md:hidden">
-              <Tooltip title={!canPublish ? t("projects.publishAdminOnly") : undefined}>
+              <Tooltip title={!canPublish ? t("content.publishAdminOnly") : undefined}>
                 <button
                   type="button"
                   disabled={!canPublish}
@@ -561,7 +561,7 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
           {/* Actions (sticky bottom) */}
           <div className="p-6 border-t border-clay-line bg-chalk-bg/50 hidden md:block">
             <div className="flex flex-col gap-3">
-              <Tooltip title={!canPublish ? t("projects.publishAdminOnly") : undefined}>
+              <Tooltip title={!canPublish ? t("content.publishAdminOnly") : undefined}>
                 <button
                   type="button"
                   disabled={!canPublish}
