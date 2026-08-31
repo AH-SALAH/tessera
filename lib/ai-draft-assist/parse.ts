@@ -2,7 +2,7 @@
 // Parses the streamed AI output into structured fields.
 // The server prompt asks the LLM to output description, then "SEO: " + summary.
 
-const SEO_MARKER = /\nSEO:\s*/i;
+const SEO_MARKER = /(?:\n|\r\n|\r|^)\s*SEO:\s*/i;
 
 export interface ParsedDraft {
   description: string;

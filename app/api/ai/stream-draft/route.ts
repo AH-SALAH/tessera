@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
   const prompt =
     `${languageInstruction} ${toneInstruction}\n\n` +
-    `After the description, write SEO: followed by a one-sentence search summary.\n\n` +
+    `After the description, on a NEW LINE write SEO: followed by a one-sentence search summary.\n\n` +
     `Notes:\n` +
     bullets.map((b) => `- ${b}`).join("\n");
 

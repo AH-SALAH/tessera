@@ -23,8 +23,8 @@ async function mockStreamDraft(page: any) {
     for (const chunk of chunks) {
       sseBody += `data: ${JSON.stringify({ text: chunk })}\n\n`;
     }
-    // Append SEO as separate text token
-    sseBody += `data: ${JSON.stringify({ text: "\n\n" + MOCK_SEO })}\n\n`;
+    // Append SEO with the marker the parser expects
+    sseBody += `data: ${JSON.stringify({ text: "\n\nSEO: " + MOCK_SEO })}\n\n`;
     sseBody += "data: [DONE]\n\n";
 
     await route.fulfill({

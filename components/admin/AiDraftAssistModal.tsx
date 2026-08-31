@@ -65,14 +65,15 @@ export function AiDraftAssistModal({
   // Error state for moderation/filtering
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  // Typewriter effect — buffered word rendering via rAF
+  // Typewriter effect — character-based draining via rAF with batched state
   const [displayText, setDisplayText] = useState("");
-  const wordBufferRef = useRef<string[]>([]);
-  const partialWordRef = useRef<string>("");
+  const charBufferRef = useRef("");      // raw chars from stream
+  const renderedRef = useRef("");        // chars already flushed to displayText
   const rafRef = useRef<number>(0);
   const isStreamingRef = useRef(false);
   const pendingFullTextRef = useRef<string | null>(null);
-  const WORDS_PER_FRAME = 5;
+  const CHARS_PER_FRAME = 5;
+  const FLUSH_EVERY = 2;       // sync to React state every N frames
 
   // User edits override the streamed content
   const [userDescription, setUserDescription] = useState<string | null>(null);
@@ -95,77 +96,58 @@ export function AiDraftAssistModal({
     };
   }, []);
 
-  // Reset streaming state when modal closes
+  // Reset streaming state when modal closes — imperative cleanup only (no setState in effect)
+  const prevOpenRef = useRef(open);
   useEffect(() => {
-    if (!open) {
+    if (prevOpenRef.current && !open) {
       abortRef.current?.abort();
       if (rafRef.current) cancelAnimationFrame(rafRef.current);
-      setIsStreaming(false);
-      setStreamingText("");
-      setDisplayText("");
-      setStreamingSeo("");
-      setErrorMessage(null);
-      wordBufferRef.current = [];
-      partialWordRef.current = "";
+      charBufferRef.current = "";
+      renderedRef.current = "";
       pendingFullTextRef.current = null;
     }
+    prevOpenRef.current = open;
   }, [open]);
 
-  // Accumulate incoming token into word buffer
+  // Accumulate incoming token into char buffer
   function enqueueToken(token: string) {
-    const combined = partialWordRef.current + token;
-    partialWordRef.current = "";
-
-    const parts = combined.split(/(\s+)/);
-    for (let i = 0; i < parts.length - 1; i += 2) {
-      const word = parts[i];
-      const space = parts[i + 1];
-      if (word) wordBufferRef.current.push(word);
-      if (space) wordBufferRef.current.push(space);
-    }
-    const last = parts[parts.length - 1];
-    if (last) {
-      if (/\s$/.test(combined)) {
-        wordBufferRef.current.push(last);
-      } else {
-        partialWordRef.current = last;
-      }
-    }
+    charBufferRef.current += token;
   }
 
-  // Drain word buffer into displayText
-  const flushWords = useCallback(() => {
-    let drained = 0;
-    while (wordBufferRef.current.length > 0 && drained < WORDS_PER_FRAME) {
-      const next = wordBufferRef.current.shift();
-      if (next) {
-        setDisplayText((prev) => prev + next);
-        drained++;
-      }
+  // Drain chars from buffer into renderedRef, batch-sync to displayText
+  const frameCountRef = useRef(0);
+  const flushChars = useCallback(() => {
+    const buf = charBufferRef.current;
+    if (buf.length === 0) return;
+    const take = Math.min(CHARS_PER_FRAME, buf.length);
+    charBufferRef.current = buf.slice(take);
+    renderedRef.current += buf.slice(0, take);
+    // Batch state updates: only sync to React state every N frames
+    frameCountRef.current++;
+    if (frameCountRef.current % FLUSH_EVERY === 0 || charBufferRef.current.length === 0) {
+      setDisplayText(renderedRef.current);
     }
   }, [])
 
-  // Flush all remaining buffer content immediately (used by onDone)
+  // Flush all remaining buffer content immediately
   function flushAllRemaining() {
-    if (partialWordRef.current) {
-      wordBufferRef.current.push(partialWordRef.current);
-      partialWordRef.current = "";
+    const remaining = charBufferRef.current;
+    charBufferRef.current = "";
+    if (remaining) {
+      renderedRef.current += remaining;
+      setDisplayText(renderedRef.current);
     }
-    if (wordBufferRef.current.length > 0) {
-      const remaining = wordBufferRef.current.join("");
-      wordBufferRef.current = [];
-      return remaining;
-    }
-    return "";
+    return remaining;
   }
 
-  // Typewriter consumer — drains word buffer via rAF
+  // Typewriter consumer — drains char buffer via rAF
   function startTyping() {
     if (rafRef.current) return;
+    frameCountRef.current = 0;
     const tick = () => {
-      flushWords();
-      // Keep draining while: tokens still coming OR buffer has words OR partial word exists
-      if (isStreamingRef.current || wordBufferRef.current.length > 0 || partialWordRef.current) {
+      flushChars();
+      const bufferEmpty = charBufferRef.current.length === 0;
+      if (isStreamingRef.current || !bufferEmpty) {
         rafRef.current = requestAnimationFrame(tick);
       } else {
         // Stream done AND buffer fully drained — finalize
@@ -174,7 +156,6 @@ export function AiDraftAssistModal({
           const fullText = pendingFullTextRef.current;
           pendingFullTextRef.current = null;
           const parsed = parseStreamOutput(fullText);
-          // Sync displayText with parsed description so Phase2→Phase3 is seamless
           setDisplayText(parsed.description);
           setStreamingText(parsed.description);
           setStreamingSeo(parsed.seoSummary);
@@ -213,8 +194,9 @@ export function AiDraftAssistModal({
     setUserSeoSummary(null);
     setStreamingText("");
     setDisplayText("");
-    wordBufferRef.current = [];
-    partialWordRef.current = "";
+    setErrorMessage(null);
+    charBufferRef.current = "";
+    renderedRef.current = "";
     pendingFullTextRef.current = null;
     isStreamingRef.current = true;
     setIsStreaming(true);
@@ -225,11 +207,6 @@ export function AiDraftAssistModal({
         enqueueToken(token);
       },
       onDone(fullText) {
-        // Flush partial word into buffer so typewriter can drain it
-        if (partialWordRef.current) {
-          wordBufferRef.current.push(partialWordRef.current);
-          partialWordRef.current = "";
-        }
         isStreamingRef.current = false;
         pendingFullTextRef.current = fullText;
       },
@@ -249,8 +226,15 @@ export function AiDraftAssistModal({
 
   function handleCancel() {
     abortRef.current?.abort();
+    if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    charBufferRef.current = "";
+    renderedRef.current = "";
+    pendingFullTextRef.current = null;
     setIsStreaming(false);
     setStreamingText("");
+    setDisplayText("");
+    setStreamingSeo("");
+    setErrorMessage(null);
     onCancel();
   }
 
@@ -326,7 +310,7 @@ export function AiDraftAssistModal({
                 block
                 onClick={handleGenerate}
                 disabled={isGenerating || !bullets.trim()}
-                className="!bg-[var(--color-moss)] !border-[var(--color-moss)] hover:!opacity-90 disabled:!text-[var(--color-muted)]"
+                className="!bg-[var(--color-moss)] !border-[var(--color-moss)] hover:!opacity-90 disabled:!text-[var(--color-chalk)] bottom-2"
               >
                 {isGenerating
                   ? t("aiDraftAssist.loading")
@@ -403,7 +387,7 @@ export function AiDraftAssistModal({
                       className="inline-block w-[2px] h-[1em] ml-[1px] align-text-bottom"
                       style={{
                         backgroundColor: "var(--color-ochre)",
-                        animation: "blink 0.8s step-end infinite"
+                        animation: "blink 1s ease-in-out infinite"
                       }}
                     />
                   </p>
@@ -489,7 +473,7 @@ export function AiDraftAssistModal({
               type="primary"
               onClick={handleApply}
               disabled={isGenerating || (!streamingText && !content)}
-              className="!bg-[var(--color-moss)] !border-[var(--color-moss)] disabled:!text-[var(--color-muted)]"
+              className="!bg-[var(--color-moss)] !border-[var(--color-moss)] disabled:!text-[var(--color-chalk)]"
             >
               {t("aiDraftAssist.modal.apply")}
             </Button>

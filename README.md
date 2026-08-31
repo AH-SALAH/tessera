@@ -83,6 +83,14 @@ _User management with invite-based onboarding_
 
 </div>
 
+<div align="center">
+
+<video src="screenshots/ai-draft-assist.mp4" alt="ai draft assistance" width="800" ></video>
+
+_Ai Draft Assistance_
+
+</div>
+
 
 ---
 
