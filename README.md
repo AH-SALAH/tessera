@@ -85,7 +85,7 @@ _User management with invite-based onboarding_
 
 <div align="center">
 
-<video src="screenshots/ai-draft-assist.mp4" alt="ai draft assistance" width="800" ></video>
+https://github.com/user-attachments/assets/434477a2-2318-45db-a552-1bf71d45c1d2
 
 _Ai Draft Assistance_
 
