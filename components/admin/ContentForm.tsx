@@ -11,7 +11,7 @@ import { z } from "zod";
 import { Form, Input, Button, Tooltip } from "antd";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
-import { AiDraftAssistModal, type AiDraftContent } from "./AiDraftAssistModal";
+import { AiDraftAssistModal, type AiDraftContent, type StreamCallbacks } from "./AiDraftAssistModal";
 import { IconAiAssist } from "@/components/ui/icons";
 import type { DraftTone } from "@/lib/ai-draft-assist/client";
 
@@ -32,10 +32,11 @@ interface ContentFormProps {
   onPublish?: () => Promise<void>;
   canPublish: boolean; // FR-008: server enforces this regardless; UI reflects it honestly
   aiDraftAssistEnabled: boolean; // FR-010: control is absent, not disabled, when flag is off
-  onGenerateDraftAssist?: (
+  onStreamGenerate?: (
     bullets: string[],
     tone: DraftTone,
-  ) => Promise<{ description?: string; descriptionAr?: string; seoSummary?: string }>;
+    callbacks: StreamCallbacks,
+  ) => AbortController;
 }
 
 export function ContentForm({
@@ -44,10 +45,9 @@ export function ContentForm({
   onPublish,
   canPublish,
   aiDraftAssistEnabled,
-  onGenerateDraftAssist,
+  onStreamGenerate,
 }: ContentFormProps) {
   const { t } = useTranslation();
-  const [aiLoading, setAiLoading] = useState(false);
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiContent, setAiContent] = useState<AiDraftContent | null>(null);
   const {
@@ -60,16 +60,16 @@ export function ContentForm({
     defaultValues,
   });
 
-  async function handleGenerate(bullets: string[], tone: DraftTone) {
-    if (!onGenerateDraftAssist) return;
-    setAiLoading(true);
-    setAiContent(null);
-    try {
-      const result = await onGenerateDraftAssist(bullets, tone);
-      setAiContent(result);
-    } finally {
-      setAiLoading(false);
+  function handleStreamGenerate(
+    bullets: string[],
+    tone: DraftTone,
+    callbacks: StreamCallbacks,
+  ): AbortController {
+    if (!onStreamGenerate) {
+      callbacks.onError();
+      return new AbortController();
     }
+    return onStreamGenerate(bullets, tone, callbacks);
   }
 
   function handleApplyAiContent(content: AiDraftContent) {
@@ -180,9 +180,8 @@ export function ContentForm({
 
       <AiDraftAssistModal
         open={aiModalOpen}
-        loading={aiLoading}
         content={aiContent}
-        onGenerate={handleGenerate}
+        onStreamGenerate={handleStreamGenerate}
         onApply={handleApplyAiContent}
         onCancel={handleCancelAi}
       />

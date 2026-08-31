@@ -75,11 +75,12 @@ export const AdminViewWithAI: Story = {
     aiDraftAssistEnabled: true,
     onSubmit: async (values) => console.log("submit", values),
     onPublish: async () => console.log("publish"),
-    onGenerateDraftAssist: async () => ({
-      description: "AI-generated project description goes here.",
-      descriptionAr: "وصف المشروع المُنشأ بالذكاء الاصطناعي.",
-      seoSummary: "AI-generated SEO summary for search engines.",
-    }),
+    onStreamGenerate: (_bullets, _tone, callbacks) => {
+      const text = "AI-generated project description goes here.";
+      callbacks.onToken(text);
+      callbacks.onDone(text);
+      return new AbortController();
+    },
   },
 };
 

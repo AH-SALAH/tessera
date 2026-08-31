@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import { gql } from "graphql-tag";
 import type { TypedDocumentNode } from "@graphql-typed-document-node/core";
-import { App } from "antd";
+import { App, Tooltip } from "antd";
 import { joinStack, splitStack } from "@/lib/validation/project";
 import { useTranslation } from "react-i18next";
 import { apolloClient } from "@/lib/apollo/client";
@@ -16,7 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { projectInputSchema } from "@/lib/validation/project";
 import { useState, useCallback, useRef } from "react";
-import { AiDraftAssistModal, type AiDraftContent } from "@/components/admin/AiDraftAssistModal";
+import { AiDraftAssistModal, type AiDraftContent, type StreamCallbacks } from "@/components/admin/AiDraftAssistModal";
+import { streamDraftAssist } from "@/lib/ai-draft-assist/stream";
 import Link from "next/link";
 import {
   IconChevronRight,
@@ -41,15 +42,7 @@ const UPDATE_PROJECT: TypedDocumentNode<UpdateProjectData> = gql`
   }
 `;
 
-const GENERATE_DRAFT_ASSIST: TypedDocumentNode<DraftAssistData> = gql`
-  mutation GenerateDraftAssist($bullets: [String!]!, $locale: Locale!, $tone: DraftTone!) {
-    generateDraftAssist(bullets: $bullets, locale: $locale, tone: $tone) {
-      available
-      description
-      seoSummary
-    }
-  }
-`;
+
 
 const PUBLISH_PROJECT: TypedDocumentNode<PublishProjectData> = gql`
   mutation PublishProject($id: ID!) {
@@ -74,13 +67,7 @@ interface PublishProjectData {
   };
 }
 
-interface DraftAssistData {
-  generateDraftAssist: {
-    available: boolean;
-    description?: string;
-    seoSummary?: string;
-  };
-}
+
 
 interface EditProjectClientProps {
   project: {
@@ -105,12 +92,9 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
   const { aiDraftAssistEnabled } = useAdminFlags();
   const [updateProject] = useMutation(UPDATE_PROJECT, { client: apolloClient });
   const [publishProject] = useMutation(PUBLISH_PROJECT, { client: apolloClient });
-  const [generateDraftAssist] = useMutation(GENERATE_DRAFT_ASSIST, {
-    client: apolloClient,
-  });
+
 
   const [status, setStatus] = useState<"DRAFT" | "PUBLISHED">(project.status);
-  const [aiLoading, setAiLoading] = useState(false);
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiContent, setAiContent] = useState<AiDraftContent | null>(null);
   const [tags, setTags] = useState<string[]>(project.stack ?? []);
@@ -158,30 +142,27 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
     syncTagsToForm(tags.filter((t) => t !== tag));
   }
 
-  async function handleDraftAssist(bullets: string[], tone: DraftTone): Promise<AiDraftContent> {
-    setAiLoading(true);
-    setAiContent(null);
-    try {
-      const [enRes, arRes] = await Promise.all([
-        generateDraftAssist({ variables: { bullets, locale: "EN", tone } }),
-        generateDraftAssist({ variables: { bullets, locale: "AR", tone } }),
-      ]);
-      const en = enRes.data?.generateDraftAssist;
-      const ar = arRes.data?.generateDraftAssist;
-      if (!en?.available && !ar?.available) message.warning(t("aiDraftAssist.unavailable"));
-      const result: AiDraftContent = {
-        description: en?.available ? en.description : undefined,
-        descriptionAr: ar?.available ? ar.description : undefined,
-        seoSummary: en?.seoSummary,
-      };
-      setAiContent(result);
-      return result;
-    } catch {
-      message.warning(t("aiDraftAssist.unavailable"));
-      return {};
-    } finally {
-      setAiLoading(false);
-    }
+  function handleStreamGenerate(
+    bullets: string[],
+    tone: DraftTone,
+    callbacks: StreamCallbacks,
+  ): AbortController {
+    let fullText = "";
+    const enLocale = locale.toUpperCase() === "AR" ? "AR" : "EN";
+
+    return streamDraftAssist(bullets, enLocale as "EN" | "AR", tone, {
+      onToken(token) {
+        fullText += token;
+        callbacks.onToken(token);
+      },
+      onDone() {
+        callbacks.onDone(fullText);
+      },
+      onError() {
+        message.warning(t("aiDraftAssist.unavailable"));
+        callbacks.onError();
+      },
+    });
   }
 
   async function onSubmit(values: ProjectFormValues) {
@@ -417,9 +398,8 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
 
             <AiDraftAssistModal
               open={aiModalOpen}
-              loading={aiLoading}
               content={aiContent}
-              onGenerate={handleDraftAssist}
+              onStreamGenerate={handleStreamGenerate}
               onApply={handleApplyAiContent}
               onCancel={() => {
                 setAiModalOpen(false);
@@ -429,15 +409,17 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
 
             {/* Action Buttons (mobile) */}
             <div className="flex gap-4 pt-6 border-t border-clay-line md:hidden">
-              <button
-                type="button"
-                disabled={!canPublish}
-                onClick={handlePublish}
-                className="flex-1 bg-moss text-on-primary font-data-label text-data-label py-3 px-4 rounded border border-transparent hover:bg-dark-moss transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-              >
-                <IconUpload className="text-[18px]" />
-                {t("projects.publishChanges")}
-              </button>
+              <Tooltip title={!canPublish ? t("projects.publishAdminOnly") : undefined}>
+                <button
+                  type="button"
+                  disabled={!canPublish}
+                  onClick={handlePublish}
+                  className="flex-1 bg-moss text-on-primary font-data-label text-data-label py-3 px-4 rounded border border-transparent hover:bg-dark-moss transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <IconUpload className="text-[18px]" />
+                  {t("projects.publishChanges")}
+                </button>
+              </Tooltip>
               <button
                 type="button"
                 onClick={handleSaveDraft}
@@ -579,15 +561,17 @@ export function EditProjectClient({ project, userRole, locale }: EditProjectClie
           {/* Actions (sticky bottom) */}
           <div className="p-6 border-t border-clay-line bg-chalk-bg/50 hidden md:block">
             <div className="flex flex-col gap-3">
-              <button
-                type="button"
-                disabled={!canPublish}
-                onClick={handlePublish}
-                className="w-full bg-moss text-on-primary font-data-label text-data-label py-3 px-4 rounded border border-transparent hover:bg-dark-moss transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
-              >
-                <IconUpload className="text-[18px]" />
-                {t("projects.publishChanges")}
-              </button>
+              <Tooltip title={!canPublish ? t("projects.publishAdminOnly") : undefined}>
+                <button
+                  type="button"
+                  disabled={!canPublish}
+                  onClick={handlePublish}
+                  className="w-full bg-moss text-on-primary font-data-label text-data-label py-3 px-4 rounded border border-transparent hover:bg-dark-moss transition-colors flex items-center justify-center gap-2 disabled:opacity-50 cursor-pointer"
+                >
+                  <IconUpload className="text-[18px]" />
+                  {t("projects.publishChanges")}
+                </button>
+              </Tooltip>
               <button
                 type="button"
                 onClick={handleSaveDraft}

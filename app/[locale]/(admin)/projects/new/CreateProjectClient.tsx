@@ -16,7 +16,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { projectInputSchema } from "@/lib/validation/project";
 import { useState, useCallback, useRef } from "react";
-import { AiDraftAssistModal, type AiDraftContent } from "@/components/admin/AiDraftAssistModal";
+import { AiDraftAssistModal, type AiDraftContent, type StreamCallbacks } from "@/components/admin/AiDraftAssistModal";
+import { streamDraftAssist } from "@/lib/ai-draft-assist/stream";
 import Link from "next/link";
 import { IconChevronRight, IconUpload, IconAiAssist } from "@/components/ui/icons";
 
@@ -35,15 +36,7 @@ const CREATE_PROJECT: TypedDocumentNode<CreateProjectData> = gql`
   }
 `;
 
-const GENERATE_DRAFT_ASSIST: TypedDocumentNode<DraftAssistData> = gql`
-  mutation GenerateDraftAssist($bullets: [String!]!, $locale: Locale!, $tone: DraftTone!) {
-    generateDraftAssist(bullets: $bullets, locale: $locale, tone: $tone) {
-      available
-      description
-      seoSummary
-    }
-  }
-`;
+
 
 interface CreateProjectData {
   createProject: {
@@ -52,13 +45,7 @@ interface CreateProjectData {
   };
 }
 
-interface DraftAssistData {
-  generateDraftAssist: {
-    available: boolean;
-    description?: string;
-    seoSummary?: string;
-  };
-}
+
 
 interface CreateProjectClientProps {
   userRole: "ADMIN" | "EDITOR";
@@ -71,11 +58,8 @@ export function CreateProjectClient({ userRole, locale }: CreateProjectClientPro
   const { message } = App.useApp();
   const { aiDraftAssistEnabled } = useAdminFlags();
   const [createProject] = useMutation(CREATE_PROJECT, { client: apolloClient });
-  const [generateDraftAssist] = useMutation(GENERATE_DRAFT_ASSIST, {
-    client: apolloClient,
-  });
 
-  const [aiLoading, setAiLoading] = useState(false);
+
   const [aiModalOpen, setAiModalOpen] = useState(false);
   const [aiContent, setAiContent] = useState<AiDraftContent | null>(null);
   const [tags, setTags] = useState<string[]>([]);
@@ -120,28 +104,27 @@ export function CreateProjectClient({ userRole, locale }: CreateProjectClientPro
     syncTagsToForm(tags.filter((t) => t !== tag));
   }
 
-  async function handleDraftAssist(bullets: string[], tone: DraftTone): Promise<AiDraftContent> {
-    setAiLoading(true);
-    setAiContent(null);
-    try {
-      const [enRes, arRes] = await Promise.all([
-        generateDraftAssist({ variables: { bullets, locale: "EN", tone } }),
-        generateDraftAssist({ variables: { bullets, locale: "AR", tone } }),
-      ]);
-      const en = enRes.data?.generateDraftAssist;
-      const ar = arRes.data?.generateDraftAssist;
-      if (!en?.available && !ar?.available) message.warning(t("aiDraftAssist.unavailable"));
-      return {
-        description: en?.available ? en.description : undefined,
-        descriptionAr: ar?.available ? ar.description : undefined,
-        seoSummary: en?.seoSummary,
-      };
-    } catch {
-      message.warning(t("aiDraftAssist.unavailable"));
-      return {};
-    } finally {
-      setAiLoading(false);
-    }
+  function handleStreamGenerate(
+    bullets: string[],
+    tone: DraftTone,
+    callbacks: StreamCallbacks,
+  ): AbortController {
+    let fullText = "";
+    const enLocale = locale.toUpperCase() === "AR" ? "AR" : "EN";
+
+    return streamDraftAssist(bullets, enLocale as "EN" | "AR", tone, {
+      onToken(token) {
+        fullText += token;
+        callbacks.onToken(token);
+      },
+      onDone() {
+        callbacks.onDone(fullText);
+      },
+      onError() {
+        message.warning(t("aiDraftAssist.unavailable"));
+        callbacks.onError();
+      },
+    });
   }
 
   async function onSubmit(values: ProjectFormValues) {
@@ -312,9 +295,8 @@ export function CreateProjectClient({ userRole, locale }: CreateProjectClientPro
 
             <AiDraftAssistModal
               open={aiModalOpen}
-              loading={aiLoading}
               content={aiContent}
-              onGenerate={handleDraftAssist}
+              onStreamGenerate={handleStreamGenerate}
               onApply={handleApplyAiContent}
               onCancel={() => {
                 setAiModalOpen(false);

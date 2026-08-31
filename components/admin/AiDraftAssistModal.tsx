@@ -1,14 +1,15 @@
 // components/admin/AiDraftAssistModal.tsx
-// Two-panel modal matching Stitch screen: left sidebar for input (bullets + tone),
-// right panel for output (draft content with skeleton loading).
+// Two-panel modal: left sidebar for input (bullets + tone), right panel for output.
+// Streaming: skeleton shimmer → typewriter effect → editable text.
 // Human-in-the-loop (FR-011): AI text is editable before applying to form.
 
 "use client";
 
 import { Modal, Input, Select, Button, Typography } from "antd";
 import { useTranslation } from "react-i18next";
-import { useState } from "react";
+import { useState, useRef, useCallback, useEffect } from "react";
 import type { DraftTone } from "@/lib/ai-draft-assist/client";
+import { parseStreamOutput } from "@/lib/ai-draft-assist/parse";
 import { IconAiAssist } from "@/components/ui/icons";
 
 const { TextArea } = Input;
@@ -20,11 +21,20 @@ export interface AiDraftContent {
   seoSummary?: string;
 }
 
+export interface StreamCallbacks {
+  onToken: (token: string) => void;
+  onDone: (fullText: string) => void;
+  onError: (message?: string) => void;
+}
+
 interface AiDraftAssistModalProps {
   open: boolean;
-  loading: boolean;
   content: AiDraftContent | null;
-  onGenerate: (bullets: string[], tone: DraftTone) => void;
+  onStreamGenerate: (
+    bullets: string[],
+    tone: DraftTone,
+    callbacks: StreamCallbacks,
+  ) => AbortController;
   onApply: (content: AiDraftContent) => void;
   onCancel: () => void;
 }
@@ -37,44 +47,224 @@ const TONE_OPTIONS: { value: DraftTone; labelKey: string }[] = [
 
 export function AiDraftAssistModal({
   open,
-  loading,
   content,
-  onGenerate,
+  onStreamGenerate,
   onApply,
   onCancel,
 }: AiDraftAssistModalProps) {
   const { t } = useTranslation();
   const [bullets, setBullets] = useState("");
   const [tone, setTone] = useState<DraftTone>("CURATORIAL");
-  // Track user edits separately from the content prop.
-  // When content changes (new generation), overrides are cleared in handleGenerate.
+
+  // Streaming state
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingText, setStreamingText] = useState("");
+  const [streamingSeo, setStreamingSeo] = useState("");
+  const abortRef = useRef<AbortController | null>(null);
+
+  // Error state for moderation/filtering
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  // Typewriter effect — buffered word rendering via rAF
+  const [displayText, setDisplayText] = useState("");
+  const wordBufferRef = useRef<string[]>([]);
+  const partialWordRef = useRef<string>("");
+  const rafRef = useRef<number>(0);
+  const isStreamingRef = useRef(false);
+  const pendingFullTextRef = useRef<string | null>(null);
+  const WORDS_PER_FRAME = 5;
+
+  // User edits override the streamed content
   const [userDescription, setUserDescription] = useState<string | null>(null);
   const [userSeoSummary, setUserSeoSummary] = useState<string | null>(null);
 
-  const description = userDescription ?? content?.description ?? "";
-  const seoSummary = userSeoSummary ?? content?.seoSummary ?? "";
+  // Derived display values
+  const description = userDescription ?? streamingText ?? content?.description ?? "";
+  const seoSummary = userSeoSummary ?? streamingSeo ?? content?.seoSummary ?? "";
+
+  // Sync isStreaming to ref for rAF closure
+  useEffect(() => {
+    isStreamingRef.current = isStreaming;
+  }, [isStreaming]);
+
+  // Cleanup abort on unmount
+  useEffect(() => {
+    return () => {
+      abortRef.current?.abort();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+    };
+  }, []);
+
+  // Reset streaming state when modal closes
+  useEffect(() => {
+    if (!open) {
+      abortRef.current?.abort();
+      if (rafRef.current) cancelAnimationFrame(rafRef.current);
+      setIsStreaming(false);
+      setStreamingText("");
+      setDisplayText("");
+      setStreamingSeo("");
+      setErrorMessage(null);
+      wordBufferRef.current = [];
+      partialWordRef.current = "";
+      pendingFullTextRef.current = null;
+    }
+  }, [open]);
+
+  // Accumulate incoming token into word buffer
+  function enqueueToken(token: string) {
+    const combined = partialWordRef.current + token;
+    partialWordRef.current = "";
+
+    const parts = combined.split(/(\s+)/);
+    for (let i = 0; i < parts.length - 1; i += 2) {
+      const word = parts[i];
+      const space = parts[i + 1];
+      if (word) wordBufferRef.current.push(word);
+      if (space) wordBufferRef.current.push(space);
+    }
+    const last = parts[parts.length - 1];
+    if (last) {
+      if (/\s$/.test(combined)) {
+        wordBufferRef.current.push(last);
+      } else {
+        partialWordRef.current = last;
+      }
+    }
+  }
+
+  // Drain word buffer into displayText
+  const flushWords = useCallback(() => {
+    let drained = 0;
+    while (wordBufferRef.current.length > 0 && drained < WORDS_PER_FRAME) {
+      const next = wordBufferRef.current.shift();
+      if (next) {
+        setDisplayText((prev) => prev + next);
+        drained++;
+      }
+    }
+  }, [])
+
+  // Flush all remaining buffer content immediately (used by onDone)
+  function flushAllRemaining() {
+    if (partialWordRef.current) {
+      wordBufferRef.current.push(partialWordRef.current);
+      partialWordRef.current = "";
+    }
+    if (wordBufferRef.current.length > 0) {
+      const remaining = wordBufferRef.current.join("");
+      wordBufferRef.current = [];
+      return remaining;
+    }
+    return "";
+  }
+
+  // Typewriter consumer — drains word buffer via rAF
+  function startTyping() {
+    if (rafRef.current) return;
+    const tick = () => {
+      flushWords();
+      // Keep draining while: tokens still coming OR buffer has words OR partial word exists
+      if (isStreamingRef.current || wordBufferRef.current.length > 0 || partialWordRef.current) {
+        rafRef.current = requestAnimationFrame(tick);
+      } else {
+        // Stream done AND buffer fully drained — finalize
+        rafRef.current = 0;
+        if (pendingFullTextRef.current) {
+          const fullText = pendingFullTextRef.current;
+          pendingFullTextRef.current = null;
+          const parsed = parseStreamOutput(fullText);
+          // Sync displayText with parsed description so Phase2→Phase3 is seamless
+          setDisplayText(parsed.description);
+          setStreamingText(parsed.description);
+          setStreamingSeo(parsed.seoSummary);
+          setIsStreaming(false);
+          abortRef.current = null;
+        }
+      }
+    };
+    rafRef.current = requestAnimationFrame(tick);
+  }
+
+  function stopTyping() {
+    if (rafRef.current) {
+      cancelAnimationFrame(rafRef.current);
+      rafRef.current = 0;
+    }
+    const remaining = flushAllRemaining();
+    if (remaining) {
+      setDisplayText((prev) => prev + remaining);
+    }
+  }
 
   function handleGenerate() {
     const bulletLines = bullets
       .split("\n")
-      .map((l) => l.replace(/^-\s*/, "").trim())
+      .map((l) => l.replace(/^-\\s*/, "").trim())
       .filter(Boolean);
-    if (bulletLines.length > 0) {
-      // Clear any previous user edits so new content shows fresh
-      setUserDescription(null);
-      setUserSeoSummary(null);
-      onGenerate(bulletLines, tone);
-    }
+    if (bulletLines.length === 0) return;
+
+    // Cancel any in-progress stream
+    abortRef.current?.abort();
+    stopTyping();
+
+    // Clear state
+    setUserDescription(null);
+    setUserSeoSummary(null);
+    setStreamingText("");
+    setDisplayText("");
+    wordBufferRef.current = [];
+    partialWordRef.current = "";
+    pendingFullTextRef.current = null;
+    isStreamingRef.current = true;
+    setIsStreaming(true);
+    startTyping();
+
+    const controller = onStreamGenerate(bulletLines, tone, {
+      onToken(token) {
+        enqueueToken(token);
+      },
+      onDone(fullText) {
+        // Flush partial word into buffer so typewriter can drain it
+        if (partialWordRef.current) {
+          wordBufferRef.current.push(partialWordRef.current);
+          partialWordRef.current = "";
+        }
+        isStreamingRef.current = false;
+        pendingFullTextRef.current = fullText;
+      },
+      onError(message) {
+        setIsStreaming(false);
+        stopTyping();
+        setStreamingText("");
+        setDisplayText("");
+        setStreamingSeo("");
+        setErrorMessage(message ?? "Generation failed. Please try again.");
+        abortRef.current = null;
+      },
+    });
+
+    abortRef.current = controller;
+  }
+
+  function handleCancel() {
+    abortRef.current?.abort();
+    setIsStreaming(false);
+    setStreamingText("");
+    onCancel();
   }
 
   function handleApply() {
     onApply({ description, seoSummary });
   }
 
+  const isGenerating = isStreaming;
+  const hasContent = isStreaming || streamingText || content;
+
   return (
     <Modal
       open={open}
-      onCancel={onCancel}
+      onCancel={handleCancel}
       width={960}
       className="!p-0"
       footer={null}
@@ -135,10 +325,12 @@ export function AiDraftAssistModal({
                 type="primary"
                 block
                 onClick={handleGenerate}
-                disabled={loading || !bullets.trim()}
+                disabled={isGenerating || !bullets.trim()}
                 className="!bg-[var(--color-moss)] !border-[var(--color-moss)] hover:!opacity-90 disabled:!text-[var(--color-muted)]"
               >
-                {loading ? t("aiDraftAssist.loading") : t("aiDraftAssist.cta")}
+                {isGenerating
+                  ? t("aiDraftAssist.loading")
+                  : t("aiDraftAssist.cta")}
               </Button>
             </div>
           </div>
@@ -165,9 +357,9 @@ export function AiDraftAssistModal({
                 className="text-xs font-medium text-[var(--color-ochre)]"
                 style={{ fontFamily: "var(--font-mono)" }}
               >
-                {loading
+                {isGenerating
                   ? t("aiDraftAssist.output.statusGenerating")
-                  : content
+                  : content || streamingText
                     ? t("aiDraftAssist.output.statusReady")
                     : t("aiDraftAssist.output.statusPending")}
               </span>
@@ -175,8 +367,9 @@ export function AiDraftAssistModal({
           </div>
 
           {/* Content Canvas */}
-          <div className="flex-1 overflow-y-auto relative p-4">
-            {loading && !content && (
+          <div className="flex-1 overflow-y-auto relative p-4 h-64 max-h-64">
+            {/* Phase 1: Skeleton shimmer — before first token */}
+            {isGenerating && !displayText && (
               <div className="max-w-2xl mx-auto space-y-4 mt-4">
                 {[100, 83, 100, 80, 0, 100, 75].map((w, i) =>
                   w === 0 ? (
@@ -184,15 +377,56 @@ export function AiDraftAssistModal({
                   ) : (
                     <div
                       key={i}
-                      className="h-4 bg-[var(--color-surface-container-high)] rounded animate-pulse"
-                      style={{ width: `${w}%` }}
+                      className="h-4 rounded"
+                      style={{
+                        width: `${w}%`,
+                        background: `linear-gradient(90deg, var(--color-clay-line) 25%, var(--color-surface) 50%, var(--color-clay-line) 75%)`,
+                        backgroundSize: "200% 100%",
+                        animation: "shimmer 1.5s ease-in-out infinite"
+                      }}
                     />
                   ),
                 )}
               </div>
             )}
 
-            {content && (
+            {/* Phase 2: Typewriter — streaming tokens arrive */}
+            {isGenerating && displayText && (
+              <div className="max-w-2xl mx-auto mt-4">
+                <div className="relative">
+                  <p
+                    className="text-sm leading-relaxed whitespace-pre-wrap"
+                    style={{ fontFamily: "var(--font-body)", color: "var(--color-graphite-text)" }}
+                  >
+                    {displayText}
+                    <span
+                      className="inline-block w-[2px] h-[1em] ml-[1px] align-text-bottom"
+                      style={{
+                        backgroundColor: "var(--color-ochre)",
+                        animation: "blink 0.8s step-end infinite"
+                      }}
+                    />
+                  </p>
+                </div>
+              </div>
+            )}
+
+            {/* Error state — moderation/filtering */}
+            {errorMessage && !isGenerating && (
+              <div className="max-w-2xl mx-auto mt-4 p-4 rounded-lg bg-[var(--color-error)]/10 border border-[var(--color-error)]/30">
+                <div className="flex items-start gap-3">
+                  <span className="text-[var(--color-error)] text-lg flex-shrink-0 mt-0.5" role="img" aria-label="Error">⚠</span>
+                  <div className="text-sm text-[var(--color-error)]" style={{ fontFamily: "var(--font-body)" }}>
+                    <p className="font-medium mb-1">{t("aiDraftAssist.error.title")}</p>
+                    <p>{errorMessage}</p>
+                    <p className="mt-2 text-xs opacity-80">{t("aiDraftAssist.error.retryHint")}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            {/* Phase 3: Final content — editable */}
+            {!isGenerating && (streamingText || content) && (
               <div className="max-w-2xl mx-auto space-y-4 mt-4">
                 <div>
                   <label
@@ -201,29 +435,42 @@ export function AiDraftAssistModal({
                   >
                     {t("content.descriptionEn")}
                   </label>
-                  <TextArea
+                  {description}
+                  {/* <TextArea
                     id="ai-description"
                     name="ai-description"
                     rows={4}
                     value={description}
                     onChange={(e) => setUserDescription(e.target.value)}
-                    disabled={loading}
                     className="!border-[var(--color-clay-line)] !rounded"
                     style={{ fontFamily: "var(--font-body)" }}
-                  />
+                  /> */}
                 </div>
-                {content.seoSummary && (
+                {seoSummary && (
                   <div>
-                    <label className="block text-xs font-medium tracking-wider uppercase text-[var(--color-muted)] mb-2">
+                    <label
+                      htmlFor="ai-seo"
+                      className="block text-xs font-medium tracking-wider uppercase text-[var(--color-muted)] mb-2"
+                    >
                       {t("aiDraftAssist.modal.seoSummary")}
                     </label>
-                    <Text className="text-sm text-[var(--color-muted)]">{content.seoSummary}</Text>
+                    {seoSummary}
+                    {/* <TextArea
+                      id="ai-seo"
+                      name="ai-seo"
+                      rows={2}
+                      value={seoSummary}
+                      onChange={(e) => setUserSeoSummary(e.target.value)}
+                      className="!border-[var(--color-clay-line)] !rounded"
+                      style={{ fontFamily: "var(--font-body)" }}
+                    /> */}
                   </div>
                 )}
               </div>
             )}
 
-            {!loading && !content && (
+            {/* Empty state */}
+            {!isGenerating && !streamingText && !content && !errorMessage && (
               <div className="flex items-center justify-center h-full text-[var(--color-muted)] text-sm">
                 {t("aiDraftAssist.output.emptyState")}
               </div>
@@ -233,7 +480,7 @@ export function AiDraftAssistModal({
           {/* Footer Actions */}
           <div className="mt-6 pt-4 border-t border-[var(--color-clay-line)] flex justify-end gap-4">
             <Button
-              onClick={onCancel}
+              onClick={handleCancel}
               className="!border-[var(--color-clay-line)] !text-[var(--color-graphite)]"
             >
               {t("aiDraftAssist.modal.cancel")}
@@ -241,7 +488,7 @@ export function AiDraftAssistModal({
             <Button
               type="primary"
               onClick={handleApply}
-              disabled={loading || !content}
+              disabled={isGenerating || (!streamingText && !content)}
               className="!bg-[var(--color-moss)] !border-[var(--color-moss)] disabled:!text-[var(--color-muted)]"
             >
               {t("aiDraftAssist.modal.apply")}
@@ -249,6 +496,8 @@ export function AiDraftAssistModal({
           </div>
         </div>
       </div>
+
+
     </Modal>
   );
 }

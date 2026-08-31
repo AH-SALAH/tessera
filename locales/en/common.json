@@ -212,6 +212,10 @@
       "apply": "Apply to Field",
       "cancel": "Discard",
       "seoSummary": "SEO Summary"
+    },
+    "error": {
+      "title": "Content Filtered",
+      "retryHint": "Try rephrasing your bullet points or adjusting the tone."
     }
   }
 }

@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { useMutation } from "@apollo/client/react";
 import { gql } from "graphql-tag";
 import { apolloClient } from "@/lib/apollo/client";
-import { App, Modal } from "antd";
+import { App } from "antd";
 import { useTranslation } from "react-i18next";
 import { useState } from "react";
 
@@ -35,7 +35,7 @@ interface ProjectsListClientProps {
 export function ProjectsListClient({ initialProjects, userRole, locale }: ProjectsListClientProps) {
   const router = useRouter();
   const { t } = useTranslation();
-  const { message } = App.useApp();
+  const { message, modal } = App.useApp();
   const [deleteProject] = useMutation<DeleteProjectData>(DELETE_PROJECT, { client: apolloClient });
 
   const [projects, setProjects] = useState(initialProjects);
@@ -55,7 +55,7 @@ export function ProjectsListClient({ initialProjects, userRole, locale }: Projec
   }));
 
   function handleDeleteConfirm(id: string, title: string) {
-    Modal.confirm({
+    modal.confirm({
       title: t("projects.deleteConfirm"),
       content: (
         <div className="px-6 py-4">

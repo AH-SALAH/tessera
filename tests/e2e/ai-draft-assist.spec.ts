@@ -14,27 +14,28 @@ const MOCK_DESCRIPTION = "AI-assisted description written for review.";
 const MOCK_SEO = "AI-assisted SEO one-liner.";
 const MOCK_BULLETS = "- Fast GraphQL API\n- Bilingual support";
 
-/** Intercept only the generateDraftAssist operation; everything else passes through. */
-async function mockGenerateDraftAssist(page: any) {
-  await page.route("**/api/graphql", async (route: any) => {
-    const body = route.request().postDataJSON();
-    if (body?.operationName === "GenerateDraftAssist") {
-      await route.fulfill({
-        status: 200,
-        contentType: "application/json",
-        body: JSON.stringify({
-          data: {
-            generateDraftAssist: {
-              available: true,
-              description: MOCK_DESCRIPTION,
-              seoSummary: MOCK_SEO,
-            },
-          },
-        }),
-      });
-      return;
+/** Intercept the streaming SSE endpoint; everything else passes through. */
+async function mockStreamDraft(page: any) {
+  await page.route("**/api/ai/stream-draft", async (route: any) => {
+    // Simulate SSE streaming: send tokens one by one
+    const chunks = MOCK_DESCRIPTION.split(/(?<=\s)/); // split on word boundaries
+    let sseBody = "";
+    for (const chunk of chunks) {
+      sseBody += `data: ${JSON.stringify({ text: chunk })}\n\n`;
     }
-    await route.continue();
+    // Append SEO as separate text token
+    sseBody += `data: ${JSON.stringify({ text: "\n\n" + MOCK_SEO })}\n\n`;
+    sseBody += "data: [DONE]\n\n";
+
+    await route.fulfill({
+      status: 200,
+      contentType: "text/event-stream",
+      headers: {
+        "Cache-Control": "no-cache",
+        Connection: "keep-alive",
+      },
+      body: sseBody,
+    });
   });
 }
 
@@ -58,7 +59,7 @@ test.describe("AI Draft Assist (flag on)", () => {
         sameSite: "Lax",
       },
     ]);
-    await mockGenerateDraftAssist(page);
+    await mockStreamDraft(page);
   });
 
   test("generated draft lands in the form and is editable before save", async ({ page }) => {
@@ -81,14 +82,15 @@ test.describe("AI Draft Assist (flag on)", () => {
     await expect(bulletsTextArea).toBeVisible();
     await bulletsTextArea.fill(MOCK_BULLETS);
 
-    // Click Generate Draft button
-    const generateDraftButton = modal.locator('button:has-text("Generate Draft")');
+    // Click Generate draft with AI button
+    const generateDraftButton = modal.locator('button:has-text("Generate draft with AI")');
     await expect(generateDraftButton).toBeVisible();
     await generateDraftButton.click();
 
-    // EN description should appear in the modal (editable textarea)
-    const enTextArea = modal.locator("textarea").nth(1);
-    await expect(enTextArea).toHaveValue(MOCK_DESCRIPTION, { timeout: 10000 });
+    // Wait for streaming to finish — the output textarea appears after streaming completes.
+    const enTextArea = modal.locator('textarea[name="ai-description"]');
+    await expect(enTextArea).toBeVisible({ timeout: 15000 });
+    await expect(enTextArea).toContainText(MOCK_DESCRIPTION, { timeout: 10000 });
 
     // Human-in-the-loop guarantee (FR-011): the AI text must be editable in the modal
     await enTextArea.fill(`${MOCK_DESCRIPTION} — human edit.`);
