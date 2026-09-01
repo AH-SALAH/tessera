@@ -126,7 +126,7 @@ npm run dev
 
 |     Layer     | Technology                                  |
 | :-----------: | ------------------------------------------- |
-| **Framework** | Next.js 15 (App Router, React 19, RSC)      |
+| **Framework** | Next.js 16 (App Router, React 19, RSC)      |
 | **Database**  | PostgreSQL (Neon) via Prisma ORM            |
 |   **Auth**    | Better Auth (email/password + GitHub OAuth) |
 |    **API**    | Apollo Server 5 (GraphQL, schema-first)     |
@@ -176,25 +176,36 @@ All defined in `.env.example` — copy to `.env.local` for local development.
 
 ## Architecture
 
+### Proxy (Next.js 16)
+
+Next.js 16 renamed `middleware.ts` to `proxy.ts`. Tessera uses `src/proxy.ts` with a default export `proxy` function handling:
+
+- **Locale detection** — cookie → Accept-Language → default `en`
+- **Admin route gating** — redirects to `/sign-in` if no session
+- **Sign-in redirect** — authenticated users skip to `/dashboard`
+- **Locale prefix enforcement** — un-prefixed paths get locale redirect
+
 ```
-app/
-  [locale]/
-    (public)/        — public routes (schema page, catalog)
-    (admin)/         — session-gated admin console
-  api/
-    auth/[...all]/   — Better Auth handler
-    graphql/         — Apollo Server (schema-first, rate-limited)
-    user/            — user preferences (locale/theme persistence)
-components/
-  ui/                — shared primitives (StatusBadge, CatalogCard)
-  admin/             — admin-only (ContentForm, ContentTable)
-  landing/           — public landing page components
-lib/
-  auth/              — session helpers, RBAC
-  ai-draft-assist/   — OpenRouter integration (feature-flagged)
-  graphql-schema/    — typeDefs, resolvers, auth guard
-  theme/             — design tokens, Ant Design theme builder
-  content/           — content service (localized field resolution)
+src/
+  proxy.ts           — Next.js 16 proxy (locale detection + session gating)
+  app/
+    [locale]/
+      (public)/      — public routes (schema page, catalog)
+      (admin)/       — session-gated admin console
+    api/
+      auth/[...all]/ — Better Auth handler
+      graphql/       — Apollo Server (schema-first, rate-limited)
+      user/          — user preferences (locale/theme persistence)
+  components/
+    ui/              — shared primitives (StatusBadge, CatalogCard)
+    admin/           — admin-only (ContentForm, ContentTable)
+    landing/         — public landing page components
+  lib/
+    auth/            — session helpers, RBAC
+    ai-draft-assist/ — OpenRouter integration (feature-flagged)
+    graphql-schema/  — typeDefs, resolvers, auth guard
+    theme/           — design tokens, Ant Design theme builder
+    content/         — content service (localized field resolution)
 styles/
   tokens.scss        — single source of truth for all design tokens
 ```
