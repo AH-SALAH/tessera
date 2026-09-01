@@ -6,9 +6,9 @@
 
 import type { Preview } from "@storybook/react";
 import { ConfigProvider } from "antd";
-import { buildAntdThemeConfig } from "../lib/theme/antd-theme";
-import "../styles/tokens.scss";
-import "../app/globals.css";
+import { buildAntdThemeConfig } from "../src/lib/theme/antd-theme";
+import "../src/styles/tokens.scss";
+import "../src/app/globals.css";
 
 const preview: Preview = {
   globalTypes: {

@@ -8,8 +8,8 @@ const path = require("path");
 
 const ROOT = process.cwd();
 const ALLOWED_FILES = new Set([
-  "styles/tokens.scss",
-  "lib/theme/antd-theme.ts",
+  "src/styles/tokens.scss",
+  "src/lib/theme/antd-theme.ts",
   ".storybook/preview.tsx",
 ]);
 

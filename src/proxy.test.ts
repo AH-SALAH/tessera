@@ -1,5 +1,5 @@
 /// <reference types="vitest/globals" />
-import { proxy } from "./proxy";
+import proxy from "./proxy";
 import { NextRequest } from "next/server";
 
 function makeRequest(

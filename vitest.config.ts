@@ -13,7 +13,7 @@ export default defineConfig({
     setupFiles: ["./tests/prisma-setup.ts", "./tests/setup.ts"],
     include: ["**/*.test.{ts,tsx}"],
     alias: {
-      "@": path.resolve(__dirname, "."),
+      "@": path.resolve(__dirname, "./src"),
     },
     pool: "forks",
     fileParallelism: false,

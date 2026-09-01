@@ -9,7 +9,7 @@ import { readFileSync, readdirSync, statSync } from "fs";
 import { join } from "path";
 
 // Directories to audit
-const AUDIT_DIRS = ["components", "app"];
+const AUDIT_DIRS = ["src/components", "src/app"];
 
 // Files exempt from the audit (single sources of truth)
 const EXEMPT_PATHS = ["lib/theme/antd-theme.ts", "styles/tokens.scss"];

@@ -9,7 +9,7 @@ import { buildSchema, introspectionFromSchema, print } from "graphql";
 import { writeFileSync } from "fs";
 
 // Import typeDefs (DocumentNode) and print to SDL
-const { typeDefs } = await import("../lib/graphql-schema/typeDefs.ts");
+const { typeDefs } = await import("../src/lib/graphql-schema/typeDefs.ts");
 
 const sdl = print(typeDefs);
 const schema = buildSchema(sdl);

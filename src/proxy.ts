@@ -1,10 +1,3 @@
-// proxy.ts
-// Single proxy layer handling two concerns per plan.md's Technical Context:
-//  1. Locale detection/redirect for the public [locale] segment
-//  2. Session gating for admin routes — redirect to sign-in if no Better Auth session cookie
-// Kept as one file per Constitution Article V (one place for cross-cutting request logic),
-// not scattered across separate middleware-like checks in individual pages.
-
 import { NextRequest, NextResponse } from "next/server";
 
 const SUPPORTED_LOCALES = ["en", "ar"] as const;
@@ -21,7 +14,7 @@ function resolveLocale(request: NextRequest): string {
   return DEFAULT_LOCALE;
 }
 
-export function proxy(request: NextRequest) {
+export default function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Session-based redirects

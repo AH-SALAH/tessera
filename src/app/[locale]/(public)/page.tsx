@@ -170,7 +170,7 @@ export default function PublicHomePage({ params }: { params: Promise<{ locale: s
               </h2>
             </ScrollReveal>
             <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-              {projects.map((project, i) => (
+              {projects.slice(0, 9).map((project, i) => (
                 <ScrollReveal key={project.id} delay={i * 80} variant="up">
                   <article className="rounded-base border border-clay-line bg-surface p-6 transition-all duration-200 hover:border-moss hover:-translate-y-0.5">
                     <div className="mb-3 flex items-start justify-between gap-3">
@@ -178,7 +178,7 @@ export default function PublicHomePage({ params }: { params: Promise<{ locale: s
                         PRJ-{String(i + 1).padStart(3, "0")}
                       </span>
                       <span
-                        className={`rounded-full px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] ${
+                        className={`rounded-xl px-2 py-0.5 font-mono text-[11px] font-semibold uppercase tracking-[0.1em] ${
                           project.status === "PUBLISHED"
                             ? "bg-moss text-white"
                             : "bg-ochre text-white"

@@ -1,5 +1,5 @@
 import { defineConfig, devices } from "@playwright/test";
-import { getSiteUrl } from "./lib/site-url";
+import { getSiteUrl } from "./src/lib/site-url";
 
 const baseURL = getSiteUrl();
 
