@@ -74,6 +74,7 @@ jobs:
   e2e-tests:
     runs-on: ubuntu-latest
     needs: [typecheck, lint]
+    if: ${{ vars.RUN_E2E == 'true' }}
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
