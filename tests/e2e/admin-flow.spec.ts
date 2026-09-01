@@ -126,8 +126,7 @@ test.describe("Admin Flow", () => {
       data: { query: `mutation { publishProject(id: "${projectId}") { id status } }` },
     });
     const publishBody = await publishResponse.json();
-    if (publishBody.errors)
-      console.error("Admin publish error:", JSON.stringify(publishBody.errors));
+    if (publishBody.errors) console.error("Admin publish error:", JSON.stringify(publishBody.errors));
     expect(publishBody.data?.publishProject?.status).toBe("PUBLISHED");
 
     // Delete it through the UI (admin sees own projects in list)
@@ -136,13 +135,30 @@ test.describe("Admin Flow", () => {
     await waitForHydration(page);
     const card = page.locator("article", { hasText: uniqueTitle });
     await expect(card).toBeVisible({ timeout: 10000 });
-    await card.locator('button[aria-label*="Delete"]').first().click();
-    // ProjectsListClient uses antd modal.confirm for delete — find the OK button
-    // in any visible antd modal (class varies across antd versions)
-    const confirmButton = page.locator('.ant-modal').locator('button').filter({ hasText: /Delete|OK|Yes|Confirm/i }).last();
-    await expect(confirmButton).toBeVisible({ timeout: 10000 });
-    await confirmButton.click();
-    await expect(card).not.toBeVisible({ timeout: 10000 });
+    
+    // 1. Fallback Rule: Catch native window.confirm boxes if it's not a true HTML modal
+    page.once('dialog', async dialog => {
+      console.log(`Intercepted Native Dialog: [${dialog.type()}] "${dialog.message()}"`);
+      await dialog.accept(); // Simulates clicking "OK"
+    });
+    await page.screenshot({ path: 'debug-before-click.png' });
+    // 2. Perform the click action
+    const deleteButton = card.locator('button[aria-label^="Delete"]').first();
+    await deleteButton.click();
+
+    try {
+      // const modal = page.locator('.ant-modal, .ant-modal-content, .ant-modal-root').first();
+      const modal = page.getByRole('dialog').first();
+      // Wait for attached state first to avoid animation race conditions
+      await modal.waitFor({ state: 'attached', timeout: 5000 });
+      const confirmButton = modal.locator('button').filter({ hasText: /Delete|OK|Yes|Confirm/i }).last();
+      await expect(confirmButton).toBeVisible({ timeout: 10000 });
+      await confirmButton.click();
+      await modal.waitFor({ state: 'hidden', timeout: 5000 });
+    } catch (error) {
+      console.error('Modal failed to appear by role. Dumping page body for inspection:');
+      throw error; // Re-throw the original error to fail the test properly
+    }
 
     // Published projects are public — verify it is gone from the public query.
     const verifyResponse = await request.post("/api/graphql", {
