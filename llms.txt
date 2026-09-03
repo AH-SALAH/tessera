@@ -1,0 +1,119 @@
+# Tessera
+
+> Lightweight, bilingual (EN/AR) content management system with a GraphQL API, dual-themed admin console, and a public content catalog. Structured content, one piece at a time.
+
+Tessera is an open-source (MIT) project. The codebase is TypeScript-strict, library-first architecture — every capability is an isolated, independently testable module under `src/lib/` before it is wired into a route or resolver. Design tokens live in one file (`src/styles/tokens.scss`), feature flags in one module (`src/lib/feature-flags.ts`), and translation strings in one place per locale (`src/locales/{en,ar}/common.json`). No component ships with a hardcoded color, font, spacing value, or UI string not traceable to one of these single sources. Every mutation re-derives the acting user from the server-side session; client-supplied identity is never trusted.
+
+## Getting Started
+
+- [README](README.md): Full setup instructions, environment variables, project structure, and architecture notes
+- [Design System](DESIGN.md): "Natural-history specimen catalog" design system — color tokens, typography (Fraunces, Public Sans, IBM Plex Mono), spacing, component specs, layout rules, and accessibility baseline
+- [Constitution](.specify/memory/constitution.md): Non-negotiable project rules — library-first, test-first (red-green-refactor), server-side authority, feature flags, design system integrity
+
+## Architecture
+
+- [Prisma Schema](prisma/schema.prisma): Database schema — User, Project, Post, Testimonial, Tag, Session, Account, Invitation, FeatureFlag, ContentAudit models
+- [Proxy (Next.js 16)](src/proxy.ts): Next.js 16 proxy function — locale detection (cookie → Accept-Language → default `en`), admin route session gating, sign-in redirect for authenticated users, locale prefix enforcement
+- [Auth Config](src/lib/auth/config.ts): Better Auth setup — email/password, GitHub OAuth, Prisma adapter, invite-only user creation (no self-signup)
+- [GraphQL Schema](src/lib/graphql-schema/typeDefs.ts): Schema-first Apollo Server 5 types — Project, Post, Testimonial, User, Invitation, localized fields, DraftAssistResult, mutations for CRUD + invite flow
+- [Content Service](src/lib/content/service.ts): Content CRUD with locale-aware field resolution (`resolveLocalizedField`), separate public vs. authenticated query paths, owner-based access for editors
+- [Auth Guard](src/lib/graphql-schema/auth-guard.ts): Server-side `requireRole()` helper for resolver authorization — derives identity from session, rejects unauthorized calls
+- [Feature Flags](src/lib/feature-flags.ts): Single flag registry (`AI_DRAFT_ASSIST`) — env var override, DB-backed toggle in production, documented graduation criteria per flag
+- [i18n Config](src/lib/i18n/config.ts): Single i18next instance per locale, backed by `locales/{en,ar}/common.json` — no hardcoded UI strings in component code
+- [i18n Settings](src/lib/i18n/settings.ts): Supported locales (`en`, `ar`), direction mapping, default locale
+
+## GraphQL API
+
+- [GraphQL Endpoint](src/app/api/graphql/): Apollo Server at `/api/graphql` — introspection enabled, rate-limited, depth-limited
+- [Project Resolvers](src/lib/graphql-schema/resolvers/): CRUD with status-based access (public sees PUBLISHED only), locale-aware field resolution
+- [Testimonial Resolvers](src/lib/graphql-schema/resolvers/testimonial.ts): CRUD with role gating — ADMIN can delete, ADMIN/EDITOR can create/update
+- [AI Draft Assist Resolver](src/lib/graphql-schema/resolvers/ai.ts): Feature-flag gated mutation (`generateDraftAssist`) — checks flag before role check, returns `FEATURE_DISABLED` when off
+
+## Content Types
+
+| Type | Localized Fields | Status | Access |
+|---|---|---|---|
+| **Project** | title, description (EN/AR) | DRAFT / PUBLISHED | Public sees PUBLISHED; editors see own + PUBLISHED; admins see all |
+| **Post** | title, body (EN/AR) | DRAFT / PUBLISHED | Same as Project |
+| **Testimonial** | quote (EN/AR) | DRAFT / PUBLISHED | Public sees PUBLISHED; admins see all |
+
+## Components
+
+### Public (`src/components/landing/`)
+- [LandingNav](src/components/landing/LandingNav.tsx): Public site navigation
+- [ShaderBackground](src/components/landing/ShaderBackground.tsx): Animated shader canvas for landing page hero
+- [ScrollReveal](src/components/landing/ScrollReveal.tsx): Scroll-triggered reveal animation wrapper
+- [LandingFooter](src/components/landing/LandingFooter.tsx): Public site footer
+
+### Shared UI (`src/components/ui/`)
+- [StatusBadge](src/components/ui/StatusBadge.tsx): Moss (published) or Ochre (draft) pill with text label — never color-only
+- [CatalogCard](src/components/ui/CatalogCard.tsx): Catalog-card styled content unit — accession number, title, status, metadata
+- [ThemeToggle](src/components/ui/ThemeSelect.tsx): Theme switcher (light/dark/system) persisted per user
+- [LanguageToggle](src/components/ui/LanguageToggle.tsx): EN/AR language switcher
+
+### Admin (`src/components/admin/`)
+- [AdminShell](src/components/admin/AdminShell.tsx): Session-gated admin layout
+- [AdminSidebar](src/components/admin/AdminSidebar.tsx): Catalog-drawer-style admin navigation
+- [TopNav](src/components/admin/TopNav.tsx): Admin top navigation bar
+- [ContentTable](src/components/admin/ContentTable.tsx): Dense content list — catalog-drawer style for browsable content
+- [ContentForm](src/components/admin/ContentForm.tsx): Create/edit form for Projects, Posts, Testimonials
+- [AiDraftAssistModal](src/components/admin/AiDraftAssistModal.tsx): AI draft assist modal — feature-flag gated
+- [UserMenu](src/components/admin/UserMenu.tsx): Admin user menu
+
+## Design System
+
+See [DESIGN.md](DESIGN.md) for full visual specification. Tokens in `src/styles/tokens.scss` are consumed by Tailwind (`tailwind.config.ts`), Ant Design (`src/lib/theme/antd-theme.ts`), and raw CSS — never hardcoded in components.
+
+**Tokens** — `--color-chalk`, `--color-surface`, `--color-graphite`, `--color-muted`, `--color-moss` (published/primary), `--color-ochre` (draft/pending), `--color-clay-line`. Accent meaning fixed across themes: Moss = confirmed/published/primary action. Ochre = draft/pending/needs-attention.
+
+**Typography** — Display: Fraunces (editorial serif). Body/UI: Public Sans. Metadata/schema: IBM Plex Mono.
+
+**Theming** — `@teispace/next-themes` drives dark/light with OS default + persisted override. Ant Design reskinned via `ConfigProvider` `theme.token` consuming Tessera tokens — no Ant Design default blue visible anywhere.
+
+## API Routes
+
+- [Auth](src/app/api/auth/): Better Auth catch-all route handler
+- [GraphQL](src/app/api/graphql/): Apollo Server — schema-first, introspection, rate limiting, depth limiting
+- [User Preferences](src/app/api/user/): Locale/theme persistence for authenticated users
+- [AI Draft Assist](src/app/api/ai/): Feature-flag gated AI endpoint (OpenRouter, feature-flagged)
+
+## i18n
+
+- [English](src/locales/en/common.json): English locale strings
+- [Arabic](src/locales/ar/common.json): Arabic locale strings — full RTL support
+- [Locale Routing](src/proxy.ts): Locale-prefixed routing (`/en`, `/ar`), Accept-Language detection, cookie persistence
+
+## Testing
+
+Tests follow test-first development (red → green → refactor). Constitution Article II is non-negotiable.
+
+- **Unit/Integration**: Vitest — `npm run test`. Covers all `src/lib/` modules: auth guards, content service, feature flags, i18n, GraphQL resolvers, validation
+- **E2E**: Playwright — `npm run test:e2e`. 4 locale×theme combinations, runs against production build
+- **A11y**: axe-core via Playwright — serious/critical violations fail the build
+- **Design-token audit**: Ensures no raw hex or Ant Design defaults leak into components
+- **Storybook**: Living component gallery with theme/locale toolbar — `npm run storybook`
+
+## Deployment
+
+- [CI Workflow](.github/workflows/ci.yml): GitHub Actions — lint, typecheck, unit tests, design-token audit, Playwright e2e, Lighthouse CI, GraphQL schema-diff, Storybook build
+
+## Scripts
+
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Next.js dev server (port 3000) |
+| `npm run build` | Production build |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run lint` | ESLint |
+| `npm run test` | Vitest unit/integration tests |
+| `npm run test:e2e` | Playwright e2e |
+| `npm run storybook` | Storybook dev server (port 6006) |
+| `npm run codegen` | GraphQL codegen |
+| `npm run prisma:migrate` | Run Prisma migrations |
+| `npm run prisma:seed` | Seed admin user |
+
+## Optional
+
+- [Next.js Config](next.config.ts): Security headers (CSP, HSTS, X-Frame-Options), Vercel deployment config
+- [TypeScript Config](tsconfig.json): Strict TypeScript with path aliases (`@/*`)
+- [License](LICENSE): MIT License
